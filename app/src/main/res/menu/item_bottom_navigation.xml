@@ -15,5 +15,9 @@
         android:id="@+id/item_realm"
         android:title="sr"
         android:icon="@drawable/common_google_signin_btn_icon_dark"/>
+     <item
+         android:id="@+id/item_profile"
+         android:title="p"
+         android:icon="@drawable/common_google_signin_btn_icon_dark"/>
     </group>
 </menu>
