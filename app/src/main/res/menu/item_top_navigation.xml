@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/item_receive"
+            android:title="r"
+            android:icon="@drawable/common_google_signin_btn_icon_dark"/>
+        <!--android:icon="@drawable/ic_search"-->
+        <item
+            android:id="@+id/item_send"
+            android:title="s"
+            android:icon="@drawable/common_google_signin_btn_icon_dark"/>
+    </group>
+
+</menu>

@@ -27,11 +27,11 @@ public class RealmFragment extends Fragment {
     public void onViewCreated(View view,Bundle savedInstanceState){
         super.onViewCreated(view,savedInstanceState);
         // Buttonのクリックした時の処理を書きます
-        view.findViewById(R.id.genreP).setOnClickListener(new View.OnClickListener() {
+        /*view.findViewById(R.id.genreP).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mTextView.setText(mTextView.getText() + "!");
             }
-        });
+        });*/
     }
 }

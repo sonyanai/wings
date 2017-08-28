@@ -30,13 +30,13 @@ public class ReceiveFragment extends Fragment {
     public void onViewCreated(View view,Bundle savedInstanceState){
         super.onViewCreated(view,savedInstanceState);
         // TextViewをひも付けます
-        mTextView = (TextView) view.findViewById(R.id.textView);
+        /*mTextView = (TextView) view.findViewById(R.id.textView);
         // Buttonのクリックした時の処理を書きます
         view.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mTextView.setText(mTextView.getText() + "!");
             }
-        });
+        });*/
     }
 }
