@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 
 /**
  * Created by taiso on 2017/08/28.
@@ -17,8 +19,7 @@ import android.view.ViewGroup;
 
 public class SendFragment extends Fragment {
 
-    private static final int PERMISSIONS_REQUEST_CODE = 100;
-
+    private Button button;
 
     //Fragmentで表示するViewを作成するメソッド
     @Override
@@ -26,6 +27,7 @@ public class SendFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
         //Fragment_receive.xmlレイアウトをここでViewとして作成する
         return inflater.inflate(R.layout.fragment_send, container, false);
+
     }
 
     //Viewが生成し終わった時に呼ばれるメソッド
