@@ -1,14 +1,20 @@
 package jp.techacademy.taison.yanai.wings;
 
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final int PERMISSIONS_REQUEST_CODE = 100;
+
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -57,8 +63,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
+
+        //Fragmentで最初の画面の設定をする
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         // Fragmentを作成します
         ReceiveFragment fragmentReceive = new ReceiveFragment();
         // コードからFragmentを追加
@@ -69,10 +77,50 @@ public class MainActivity extends AppCompatActivity {
         // 最後にcommitを使用することで変更を反映します
         transaction.commit();
 
-        //BottomNavigationViewの定義
-        BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottom_navigation_view);
+
+        //BottomNavigationViewの定義して設置する
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation_view);
         //リスナーのセット
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+    }
+
+    public void onSelfCheck() {
+        // パーミッションの許可状態を確認する
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                // 許可されている
+                showChooser();
+            } else {
+                // 許可されていないので許可ダイアログを表示する
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_CODE);
+
+                return;
+            }
+        } else {
+            showChooser();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_CODE:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d("ANDROID", "許可された");
+                } else {
+                    Log.d("ANDROID", "許可されなかった");
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void showChooser() {
+        // ギャラリーから選択するIntent
+        Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        galleryIntent.setType("image/*");
+        galleryIntent.addCategory(Intent.CATEGORY_OPENABLE);
     }
 }
