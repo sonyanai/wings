@@ -1,11 +1,14 @@
 package jp.techacademy.taison.yanai.wings;
 
+import android.Manifest;
+//import android.Manifest;これは手動で追加する
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentTransaction;
+//Fragmentのimportはこれ！！！
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +17,7 @@ import android.view.MenuItem;
 public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSIONS_REQUEST_CODE = 100;
+    private static final int CHOOSER_REQUEST_CODE = 100;
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -122,5 +126,9 @@ public class MainActivity extends AppCompatActivity {
         Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
         galleryIntent.setType("image/*");
         galleryIntent.addCategory(Intent.CATEGORY_OPENABLE);
+
+        // ギャラリー選択のIntentを与えてcreateChooserメソッドを呼ぶ
+        Intent chooserIntent = Intent.createChooser(galleryIntent, "画像を取得");
+        startActivityForResult(chooserIntent, CHOOSER_REQUEST_CODE);
     }
 }
