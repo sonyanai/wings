@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 //Fragmentのimportはこれ！！！
 import android.support.v7.app.AppCompatActivity;
@@ -27,7 +28,13 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSIONS_REQUEST_CODE = 100;
     private static final int CHOOSER_REQUEST_CODE = 100;
-    public static ImageView imgView;
+    //メンバ変数として定義
+    public ReceiveFragment fragmentReceive;
+    public SendFragment fragmentSend;
+    public RealmFragment fragmentRealm;
+    public ProfileFragment fragmentProfile;
+    public Fragment SendFragment;
+    //SendFragment fragment = (SendFragment).getFragmentManager().findFragmentById(R.id.imgView);
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -36,8 +43,8 @@ public class MainActivity extends AppCompatActivity {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             switch (item.getItemId()) {
                 case R.id.item_receive:
-                    // Fragmentを作成します
-                    ReceiveFragment fragmentReceive = new ReceiveFragment();
+                    // Fragmentを作成・初期化します
+                    fragmentReceive = new ReceiveFragment();
                     // コードからFragmentを追加
                     // Fragmentの追加や削除といった変更を行う際は、Transactionを利用します
                     // 新しく追加を行うのでaddを使用します
@@ -49,8 +56,8 @@ public class MainActivity extends AppCompatActivity {
 
 
                 case R.id.item_send:
-                    // Fragmentを作成します
-                    SendFragment fragmentSend = new SendFragment();
+                    // Fragmentを作成・初期化
+                    fragmentSend = new SendFragment();
                     // 他にも、メソッドにはreplace removeがあります
                     // メソッドの1つ目の引数は対象のViewGroupのID、2つ目の引数は追加するfragment
                     transaction.replace(R.id.container, fragmentSend);
@@ -59,13 +66,13 @@ public class MainActivity extends AppCompatActivity {
                     return true;
 
                 case R.id.item_realm:
-                    RealmFragment fragmentRealm = new RealmFragment();
+                    fragmentRealm = new RealmFragment();
                     transaction.replace(R.id.container, fragmentRealm);
                     transaction.commit();
                     return true;
 
                 case R.id.item_profile:
-                    ProfileFragment fragmentProfile = new ProfileFragment();
+                    fragmentProfile = new ProfileFragment();
                     transaction.replace(R.id.container, fragmentProfile);
                     transaction.commit();
                     return true;
@@ -78,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ImageView imgView = (ImageView)fragmentSend.findViewById(R.id.imgView);
 
 
 
@@ -98,8 +107,6 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation_view);
         //リスナーのセット
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-
     }
 
 
@@ -196,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
                     ImageView targetView = null;
                     switch (i) {
                         case 0:
-                            //targetView = imgView;;
+                            targetView = imgView;;
                             break;
                         default:
                             break;
