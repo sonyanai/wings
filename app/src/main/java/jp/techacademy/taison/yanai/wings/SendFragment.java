@@ -18,14 +18,16 @@ public class SendFragment extends Fragment {
 
     private Button button;
 
+
+
     //Fragmentで表示するViewを作成するメソッド
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
         View v = inflater.inflate(R.layout.fragment_send,container,false);
-        //ここからUIのインスタンスを保持する
-        ImageView imgView = (ImageView)v.findViewById(R.id.imgView);
+        MainActivity activity = (MainActivity)getActivity();
+        activity.imgView = (ImageView)v.findViewById(R.id.imgView);
 
 
         return v;
@@ -44,7 +46,13 @@ public class SendFragment extends Fragment {
             public void onClick(View v) {
                 MainActivity activity = (MainActivity)getActivity();
                 activity.onSelfCheck();
-
+            }
+        });
+        view.findViewById(R.id.sendButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity activity = (MainActivity)getActivity();
+                activity.onSend();
             }
         });
     }

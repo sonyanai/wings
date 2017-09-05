@@ -7,29 +7,13 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="person"
-        android:id="@+id/genreP"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="scenery"
-        android:id="@+id/genreS"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="animal"
-        android:id="@+id/genreA"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="object"
-        android:id="@+id/genreO"/>
+        android:text="ranking"
+        android:id="@+id/ranking_Button"/>
 
-    <Button
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="etc"
-        android:id="@+id/genreE"/>
+        android:text="search"/>
 
     <EditText
         android:layout_width="wrap_content"

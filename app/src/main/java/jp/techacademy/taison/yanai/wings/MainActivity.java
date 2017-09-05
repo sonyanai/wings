@@ -20,6 +20,13 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,8 +40,14 @@ public class MainActivity extends AppCompatActivity {
     public SendFragment fragmentSend;
     public RealmFragment fragmentRealm;
     public ProfileFragment fragmentProfile;
-    public Fragment SendFragment;
-    //SendFragment fragment = (SendFragment).getFragmentManager().findFragmentById(R.id.imgView);
+    public ImageView imgView;
+    //firebasestrageをstrageという名前で使いますよ.これで Cloud Storage が使えるようになる
+    FirebaseStorage storage;
+    //strageの中にimgRefという領域を作りますよ
+    StorageReference storageRef;
+    StorageReference imgRef;
+    Uri uri;
+
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -86,7 +99,25 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ImageView imgView = (ImageView)fragmentSend.findViewById(R.id.imgView);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -151,7 +182,8 @@ public class MainActivity extends AppCompatActivity {
         //複数選択可能
         galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         //選択した動画像を読み込む
-        galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+        //galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+        galleryIntent.setAction(Intent.ACTION_PICK);
         //galleryに飛ばして選択させる
         startActivityForResult(Intent.createChooser(galleryIntent,"画像/動画を選択"), CHOOSER_REQUEST_CODE);
     }
@@ -172,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
                     //通常なら，エラーがなければ実行する処理
 
                     //
-                    Uri uri = data.getData();
+                    uri = data.getData();
                     //
                     InputStream in = getContentResolver().openInputStream(uri);
                     //
@@ -203,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
                     ImageView targetView = null;
                     switch (i) {
                         case 0:
-                            targetView = imgView;;
+                            targetView = imgView;
                             break;
                         default:
                             break;
@@ -214,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             //エラーが出なかった時に死体処理
                             ClipData.Item item = clipData.getItemAt(i);
-                            Uri uri = item.getUri();
+                            uri = item.getUri();
                             InputStream in = getContentResolver().openInputStream(uri);
                             Bitmap img = BitmapFactory.decodeStream(in);
                             //ファイルを開いたら閉じなければならない(書き込むときはtry-catch}のあとに書く)
@@ -232,5 +264,30 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+    public void onSend(){
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference();
+        //imgRef = storageRef.child(Const.ContentsPATH).child("drawable/scenery.jpg");
+        //imgRef = storageRef.child(Const.ContentsPATH).child("drawable/scenery.jpg");
+        Uri file = uri;
+        StorageReference imgRef = storageRef.child("images/"+file.getLastPathSegment());
+        UploadTask uploadTask = imgRef.putFile(file);
+
+        // Register observers to listen for when the download is done or if it fails
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Log.d("aaa","failed");
+                // Handle unsuccessful uploads
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                Log.d("aaa","success");
+            }
+        });
     }
 }
