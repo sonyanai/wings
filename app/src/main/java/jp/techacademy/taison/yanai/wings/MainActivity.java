@@ -3,12 +3,16 @@ package jp.techacademy.taison.yanai.wings;
 import android.Manifest;
 //import android.Manifest;これは手動で追加する
 import android.content.ClipData;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -270,7 +274,20 @@ public class MainActivity extends AppCompatActivity {
         storageRef = storage.getReference();
         //imgRef = storageRef.child(Const.ContentsPATH).child("drawable/scenery.jpg");
         //imgRef = storageRef.child(Const.ContentsPATH).child("drawable/scenery.jpg");
-        Uri file = uri;
+
+        /*// 画像の情報を取得する
+        ContentResolver resolver = getContentResolver();
+        Cursor cursor = resolver.query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, // データの種類
+                null, // 項目(null = 全項目)
+                null, // フィルタ条件(null = フィルタなし)
+                null, // フィルタ用パラメータ
+                null // ソート (null ソートなし)
+        );
+        int fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID);
+        Long id = cursor.getLong(fieldIndex);
+        uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);*/
+        Uri file = Uri.fromFile(new File("/media/external/file/84/ORIGINAL/NONE/1167670437"));
         StorageReference imgRef = storageRef.child("images/"+file.getLastPathSegment());
         UploadTask uploadTask = imgRef.putFile(file);
 
