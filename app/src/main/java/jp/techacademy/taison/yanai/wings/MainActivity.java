@@ -103,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mFileArrayList = new ArrayList<Uri>();
+
 
         //Fragmentで最初の画面の設定をする
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -178,8 +180,14 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == CHOOSER_REQUEST_CODE && resultCode == RESULT_OK) {
             //選択されたのがnullでない場合
             if (data.getData() != null) {
+                //単一選択の場合
+                /*if (data ==1){
+                    //単一選択の場合
+                }else{
+                    //複数選択の場合
+                }*/
 
-
+/*
                 // 単一選択
                 //Exception系の例外が発生しそうな命令を呼び出す場合
                 // try-catch文で例外が発生した時の代替処理を用意しておかないとコンパイルエラーになる
@@ -190,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
                     uri = data.getData();
 
                     //uriをarraylistに追加
-                    mFileArrayList = new ArrayList<Uri>();
+                    //mFileArrayList = new ArrayList<Uri>();
                     mFileArrayList.add(uri);
 
                     //
@@ -235,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
                             //エラーが出なかった時にしたい処理
                             ClipData.Item item = clipData.getItemAt(i);
                             uri = item.getUri();
-                            mFileArrayList = new ArrayList<Uri>();
+                            //mFileArrayList = new ArrayList<Uri>();
                             //uriをarraylistに追加
                             mFileArrayList.add(uri);
                             InputStream in = getContentResolver().openInputStream(uri);
@@ -252,6 +260,39 @@ public class MainActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     }
+                }*/
+                ClipData clipData = data.getClipData();
+                for (int i = 0; i < clipData.getItemCount(); i++){
+                    try {
+                        //エラーが出なかった時にしたい処理
+                        ClipData.Item item = clipData.getItemAt(i);
+                        // i に対するビューを設定
+                        ImageView targetView = null;
+                        switch (i) {
+                            case 0:
+                                targetView = imgView;
+                                break;
+                            default:
+                                break;
+                        }
+                        uri = item.getUri();
+                        //mFileArrayList = new ArrayList<Uri>();
+                        //uriをarraylistに追加
+                        mFileArrayList.add(uri);
+                        InputStream in = getContentResolver().openInputStream(uri);
+                        Bitmap img = BitmapFactory.decodeStream(in);
+                        //ファイルを開いたら閉じなければならない(書き込むときはtry-catch}のあとに書く)
+                        in.close();
+                        // 選択した画像[i]を表示
+                        targetView.setImageBitmap(img);
+                        //エラー処理
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                        //エラー処理
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
                 }
             }
         }
@@ -267,6 +308,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
 
         for(Uri mFile : mFileArrayList){
             StorageReference imgRef = storageRef.child(user.getUid()).child(file.getLastPathSegment()+ ".jpg");
