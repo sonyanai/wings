@@ -6,9 +6,7 @@ package jp.techacademy.taison.yanai.wings;
 
 public class Const {
     // Firebaseにユーザの表示名を保存するパス
-    public static final String UserPATH = "users";
-    // Firebaseに質問を保存するバス
-    public static final String ContentsPATH = "contents";
+    public static final String UsersPATH = "users";
 
     // Preferenceに表示名を保存する時のキー
     public static final String NameKEY = "name";

@@ -3,16 +3,12 @@ package jp.techacademy.taison.yanai.wings;
 import android.Manifest;
 //import android.Manifest;これは手動で追加する
 import android.content.ClipData;
-import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -26,6 +22,8 @@ import android.widget.ImageView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -34,11 +32,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSIONS_REQUEST_CODE = 100;
     private static final int CHOOSER_REQUEST_CODE = 100;
+    private ArrayList<Uri> mFileArrayList;
     //メンバ変数として定義
     public ReceiveFragment fragmentReceive;
     public SendFragment fragmentSend;
@@ -102,27 +102,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         //Fragmentで最初の画面の設定をする
@@ -209,6 +188,11 @@ public class MainActivity extends AppCompatActivity {
 
                     //
                     uri = data.getData();
+
+                    //uriをarraylistに追加
+                    mFileArrayList = new ArrayList<Uri>();
+                    mFileArrayList.add(uri);
+
                     //
                     InputStream in = getContentResolver().openInputStream(uri);
                     //
@@ -218,12 +202,12 @@ public class MainActivity extends AppCompatActivity {
 
                     // 選択した画像を表示
                     imgView.setImageBitmap(img);
-                //指定されたパス名のファイルが存在しない時や存在していても何らかの理由でアクセスできない場合
-                //例えば読み込み専用のファイルを書き込みのために開こうとした場合などにそれらのコンストラクタによって投げられる
+                    //指定されたパス名のファイルが存在しない時や存在していても何らかの理由でアクセスできない場合
+                    //例えば読み込み専用のファイルを書き込みのために開こうとした場合などにそれらのコンストラクタによって投げられる
                 } catch (FileNotFoundException e) {
                     //その時の処理
                     e.printStackTrace();
-                //ファイルの読み書きなどの入出力ができない時のエラー
+                    //ファイルの読み書きなどの入出力ができない時のエラー
                 } catch (IOException e) {
                     //その時の処理
                     e.printStackTrace();
@@ -248,19 +232,22 @@ public class MainActivity extends AppCompatActivity {
                     if (targetView != null) {
                         //エラー出てきたときのためのやつ
                         try {
-                            //エラーが出なかった時に死体処理
+                            //エラーが出なかった時にしたい処理
                             ClipData.Item item = clipData.getItemAt(i);
                             uri = item.getUri();
+                            mFileArrayList = new ArrayList<Uri>();
+                            //uriをarraylistに追加
+                            mFileArrayList.add(uri);
                             InputStream in = getContentResolver().openInputStream(uri);
                             Bitmap img = BitmapFactory.decodeStream(in);
                             //ファイルを開いたら閉じなければならない(書き込むときはtry-catch}のあとに書く)
                             in.close();
                             // 選択した画像[i]を表示
                             targetView.setImageBitmap(img);
-                        //エラー処理
+                            //エラー処理
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
-                        //エラー処理
+                            //エラー処理
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -272,39 +259,41 @@ public class MainActivity extends AppCompatActivity {
     public void onSend(){
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
-        //imgRef = storageRef.child(Const.ContentsPATH).child("drawable/scenery.jpg");
-        //imgRef = storageRef.child(Const.ContentsPATH).child("drawable/scenery.jpg");
 
-        /*// 画像の情報を取得する
-        ContentResolver resolver = getContentResolver();
-        Cursor cursor = resolver.query(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, // データの種類
-                null, // 項目(null = 全項目)
-                null, // フィルタ条件(null = フィルタなし)
-                null, // フィルタ用パラメータ
-                null // ソート (null ソートなし)
-        );
-        int fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID);
-        Long id = cursor.getLong(fieldIndex);
-        uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);*/
-        Uri file = Uri.fromFile(new File("/media/external/file/84/ORIGINAL/NONE/1167670437"));
-        StorageReference imgRef = storageRef.child("images/"+file.getLastPathSegment());
-        UploadTask uploadTask = imgRef.putFile(file);
 
-        // Register observers to listen for when the download is done or if it fails
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                Log.d("aaa","failed");
-                // Handle unsuccessful uploads
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                Log.d("aaa","success");
-            }
-        });
+        Uri file = uri;
+
+        //arraylistでループ処理しながらファイルのアップデート269-288ループ
+
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        for(Uri mFile : mFileArrayList){
+            StorageReference imgRef = storageRef.child(user.getUid()).child(file.getLastPathSegment()+ ".jpg");
+            UploadTask uploadTask = imgRef.putFile(mFile);
+            //UploadTask uploadTask = imgRef.putFile(file);
+
+            // Register observers to listen for when the download is done or if it fails
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Log.d("aaa","failed");
+                    // Handle unsuccessful uploads
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                    // Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    Log.d("aaa","success");
+                }
+            });
+        }
+        //arraylistをクリアーさせる
+        mFileArrayList.clear();
+    }
+    public void intentLogin(){
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(intent);
     }
 }

@@ -1,6 +1,7 @@
 package jp.techacademy.taison.yanai.wings;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 //fragmentのimportはこれ！！！
@@ -9,6 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 /**
  * Created by taison on 2017/08/28.
@@ -44,8 +48,14 @@ public class SendFragment extends Fragment {
         view.findViewById(R.id.selectButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity activity = (MainActivity)getActivity();
-                activity.onSelfCheck();
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if(user != null){
+                    MainActivity activity = (MainActivity)getActivity();
+                    activity.onSelfCheck();
+                }else{
+                    MainActivity activity = (MainActivity)getActivity();
+                    activity.intentLogin();
+                }
             }
         });
         view.findViewById(R.id.sendButton).setOnClickListener(new View.OnClickListener() {
