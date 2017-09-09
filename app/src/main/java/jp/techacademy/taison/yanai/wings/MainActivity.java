@@ -311,7 +311,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         for(Uri mFile : mFileArrayList){
-            StorageReference imgRef = storageRef.child(user.getUid()).child(file.getLastPathSegment()+ ".jpg");
+            StorageReference imgRef = storageRef.child(user.getUid()).child(mFile.getLastPathSegment()+ ".jpg");
             UploadTask uploadTask = imgRef.putFile(mFile);
             //UploadTask uploadTask = imgRef.putFile(file);
 
