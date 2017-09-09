@@ -267,14 +267,14 @@ public class MainActivity extends AppCompatActivity {
                         //エラーが出なかった時にしたい処理
                         ClipData.Item item = clipData.getItemAt(i);
                         // i に対するビューを設定
-                        ImageView targetView = null;
+                        /*ImageView targetView = null;
                         switch (i) {
                             case 0:
                                 targetView = imgView;
                                 break;
                             default:
                                 break;
-                        }
+                        }*/
                         uri = item.getUri();
                         //mFileArrayList = new ArrayList<Uri>();
                         //uriをarraylistに追加
@@ -284,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
                         //ファイルを開いたら閉じなければならない(書き込むときはtry-catch}のあとに書く)
                         in.close();
                         // 選択した画像[i]を表示
-                        targetView.setImageBitmap(img);
+                        //targetView.setImageBitmap(img);
                         //エラー処理
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
