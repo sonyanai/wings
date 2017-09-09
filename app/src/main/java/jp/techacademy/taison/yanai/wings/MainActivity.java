@@ -33,6 +33,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,6 +52,15 @@ public class MainActivity extends AppCompatActivity {
     StorageReference storageRef;
     StorageReference imgRef;
     Uri uri;
+
+    final Calendar calendar = Calendar.getInstance();
+
+    final int year = calendar.get(Calendar.YEAR);
+    final int month = calendar.get(Calendar.MONTH);
+    final int day = calendar.get(Calendar.DAY_OF_MONTH);
+    final int hour = calendar.get(Calendar.HOUR_OF_DAY);
+    final int minute = calendar.get(Calendar.MINUTE);
+
 
 
 
@@ -311,9 +321,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         for(Uri mFile : mFileArrayList){
-            StorageReference imgRef = storageRef.child(user.getUid()).child(mFile.getLastPathSegment()+ ".jpg");
+            StorageReference imgRef = storageRef.child(user.getUid()).child(year +"."+ (month + 1) +"."+ day + " " + hour + ":" + minute).child(mFile.getLastPathSegment()+ ".jpg");
             UploadTask uploadTask = imgRef.putFile(mFile);
-            //UploadTask uploadTask = imgRef.putFile(file);
 
             // Register observers to listen for when the download is done or if it fails
             uploadTask.addOnFailureListener(new OnFailureListener() {
