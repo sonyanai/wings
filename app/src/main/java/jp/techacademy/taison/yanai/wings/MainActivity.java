@@ -114,6 +114,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference();
+
         mFileArrayList = new ArrayList<Uri>();
 
 
@@ -235,8 +238,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void onSend(){
-        storage = FirebaseStorage.getInstance();
-        storageRef = storage.getReference();
+        //storage = FirebaseStorage.getInstance();
+        //storageRef = storage.getReference();
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
