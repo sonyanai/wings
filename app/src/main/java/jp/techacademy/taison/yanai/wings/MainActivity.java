@@ -50,7 +50,8 @@ public class MainActivity extends AppCompatActivity {
     FirebaseStorage storage;
     //strageの中にimgRefという領域を作りますよ
     StorageReference storageRef;
-    StorageReference imgRef;
+    //private long fileSize;
+    //private long totalSize;
     Uri uri;
 
     final Calendar calendar = Calendar.getInstance();
@@ -114,6 +115,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mFileArrayList = new ArrayList<Uri>();
+
+
 
 
         //Fragmentで最初の画面の設定をする
@@ -190,107 +193,30 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == CHOOSER_REQUEST_CODE && resultCode == RESULT_OK) {
             //選択されたのがnullでない場合
             if (data.getData() != null) {
-                //単一選択の場合
-                /*if (data ==1){
-                    //単一選択の場合
-                }else{
-                    //複数選択の場合
-                }*/
-
-/*
-                // 単一選択
-                //Exception系の例外が発生しそうな命令を呼び出す場合
-                // try-catch文で例外が発生した時の代替処理を用意しておかないとコンパイルエラーになる
-                try {
-                    //通常なら，エラーがなければ実行する処理
-
-                    //
-                    uri = data.getData();
-
-                    //uriをarraylistに追加
-                    //mFileArrayList = new ArrayList<Uri>();
-                    mFileArrayList.add(uri);
-
-                    //
-                    InputStream in = getContentResolver().openInputStream(uri);
-                    //
-                    Bitmap img = BitmapFactory.decodeStream(in);
-                    //ファイルを開いたら閉じなければならない(書き込むときはtry-catch}のあとに書く)
-                    in.close();
-
-                    // 選択した画像を表示
-                    imgView.setImageBitmap(img);
-                    //指定されたパス名のファイルが存在しない時や存在していても何らかの理由でアクセスできない場合
-                    //例えば読み込み専用のファイルを書き込みのために開こうとした場合などにそれらのコンストラクタによって投げられる
-                } catch (FileNotFoundException e) {
-                    //その時の処理
-                    e.printStackTrace();
-                    //ファイルの読み書きなどの入出力ができない時のエラー
-                } catch (IOException e) {
-                    //その時の処理
-                    e.printStackTrace();
-                }
-            } else {
 
 
-                // 複数選択(EXTRA_ALLOW_MULTIPLE)
-                //getClipData()で結果が得る
-                ClipData clipData = data.getClipData();
-                for (int i = 0; i < clipData.getItemCount(); i++) {
-                    // i に対するビューを設定
-                    ImageView targetView = null;
-                    switch (i) {
-                        case 0:
-                            targetView = imgView;
-                            break;
-                        default:
-                            break;
-                    }
-                    // ビューに画像を設定
-                    if (targetView != null) {
-                        //エラー出てきたときのためのやつ
-                        try {
-                            //エラーが出なかった時にしたい処理
-                            ClipData.Item item = clipData.getItemAt(i);
-                            uri = item.getUri();
-                            //mFileArrayList = new ArrayList<Uri>();
-                            //uriをarraylistに追加
-                            mFileArrayList.add(uri);
-                            InputStream in = getContentResolver().openInputStream(uri);
-                            Bitmap img = BitmapFactory.decodeStream(in);
-                            //ファイルを開いたら閉じなければならない(書き込むときはtry-catch}のあとに書く)
-                            in.close();
-                            // 選択した画像[i]を表示
-                            targetView.setImageBitmap(img);
-                            //エラー処理
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                            //エラー処理
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }*/
+
+                //ここでサイズを取得したい
+
+
+
+
+
                 ClipData clipData = data.getClipData();
                 for (int i = 0; i < clipData.getItemCount(); i++){
                     try {
                         //エラーが出なかった時にしたい処理
                         ClipData.Item item = clipData.getItemAt(i);
-                        // i に対するビューを設定
-                        /*ImageView targetView = null;
-                        switch (i) {
-                            case 0:
-                                targetView = imgView;
-                                break;
-                            default:
-                                break;
-                        }*/
+
                         uri = item.getUri();
                         //mFileArrayList = new ArrayList<Uri>();
                         //uriをarraylistに追加
                         mFileArrayList.add(uri);
+                        //totalSize += fileSize;
+
+
                         InputStream in = getContentResolver().openInputStream(uri);
-                        Bitmap img = BitmapFactory.decodeStream(in);
+                        //Bitmap img = BitmapFactory.decodeStream(in);
                         //ファイルを開いたら閉じなければならない(書き込むときはtry-catch}のあとに書く)
                         in.close();
                         // 選択した画像[i]を表示
@@ -302,23 +228,17 @@ public class MainActivity extends AppCompatActivity {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
                 }
             }
         }
     }
+
+
     public void onSend(){
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
 
-
-        Uri file = uri;
-
-        //arraylistでループ処理しながらファイルのアップデート269-288ループ
-
-
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
 
         for(Uri mFile : mFileArrayList){
             StorageReference imgRef = storageRef.child(user.getUid()).child(year +"."+ (month + 1) +"."+ day + " " + hour + ":" + minute).child(mFile.getLastPathSegment()+ ".jpg");
