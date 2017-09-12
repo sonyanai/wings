@@ -17,7 +17,7 @@
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:text="ok"
-        android:id="@+id/ranking_Button"/>
+        android:id="@+id/searchButton"/>
 
 
 
