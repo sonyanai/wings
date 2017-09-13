@@ -22,9 +22,10 @@ import com.google.firebase.storage.StorageReference;
 //Fraggmentクラスを継承する
 public class ReceiveFragment extends Fragment {
 
-    private EditText codeEdit;
-    private Button searchButton;
-    public static String code;
+
+    public static String cord;
+    Button searchButton;
+    EditText cordEdit;
 
 
    //Fragmentで表示するViewを作成するメソッド
@@ -35,8 +36,8 @@ public class ReceiveFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_receive,container,false);
         MainActivity activity = (MainActivity)getActivity();
         //ReceiveActivityで引っ張ってくるUI
-        Button searchButton = (Button)v.findViewById(R.id.searchButton);
-        EditText codeEdit = (EditText)v.findViewById(R.id.codeEdit);
+        searchButton = (Button)v.findViewById(R.id.searchButton);
+        cordEdit = (EditText)v.findViewById(R.id.cordEdit);
 
         return v;
     }
@@ -52,6 +53,9 @@ public class ReceiveFragment extends Fragment {
         view.findViewById(R.id.searchButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                cord = cordEdit.getText().toString();
+                MainActivity activity = (MainActivity)getActivity();
+                activity.download();
                 /*FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 if(user != null){
                     MainActivity activity = (MainActivity)getActivity();
@@ -61,9 +65,9 @@ public class ReceiveFragment extends Fragment {
                     activity.intentLogin();
                 }*/
 
-                //code = searchButton.getText().toString();
+                //cord = searchButton.getText().toString();
 
-                /*if (指定されたcodeがあったら){
+                /*if (指定されたcordがあったら){
                     fragmentで書き換えてgridview(WatchFragment)を表示
                     // Fragmentを作成・初期化します
                     fragmentReceive = new ReceiveFragment();

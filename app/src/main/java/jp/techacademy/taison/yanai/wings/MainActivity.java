@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     public RealmFragment fragmentRealm;
     public ProfileFragment fragmentProfile;
     public ImageView imgView;
+    FirebaseUser user;
     //firebasestrageをstrageという名前で使いますよ.これで Cloud Storage が使えるようになる
     FirebaseStorage storage;
     //strageの中にimgRefという領域を作りますよ
@@ -55,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
     //private long totalSize;
     Uri uri;
 
+    StorageReference imgRef;
+
     final Calendar calendar = Calendar.getInstance();
 
     final int year = calendar.get(Calendar.YEAR);
@@ -62,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
     final int day = calendar.get(Calendar.DAY_OF_MONTH);
     final int hour = calendar.get(Calendar.HOUR_OF_DAY);
     final int minute = calendar.get(Calendar.MINUTE);
+
 
 
 
@@ -117,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
 
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
         mFileArrayList = new ArrayList<Uri>();
 
@@ -242,17 +247,17 @@ public class MainActivity extends AppCompatActivity {
         //storage = FirebaseStorage.getInstance();
         //storageRef = storage.getReference();
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
         for(Uri mFile : mFileArrayList){
-            StorageReference imgRef = storageRef.child(user.getUid()).child(year +"."+ (month + 1) +"."+ day + " " + hour + ":" + minute).child(mFile.getLastPathSegment()+ ".jpg");
+            imgRef = storageRef.child(user.getUid()).child(year +"."+ (month + 1) +"."+ day + " " + hour + ":" + minute).child(mFile.getLastPathSegment()+ ".jpg");
             UploadTask uploadTask = imgRef.putFile(mFile);
 
             // Register observers to listen for when the download is done or if it fails
             uploadTask.addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
-                    Log.d("aaa","failed");
+                    fAlertDialog();
                     // Handle unsuccessful uploads
                 }
             }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -260,8 +265,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                     // Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                    Log.d("aaa","success");
-                    showAlertDialog();
+                    sAlertDialog();
                 }
             });
         }
@@ -273,11 +277,11 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void showAlertDialog() {
+    private void sAlertDialog() {
         // AlertDialog.Builderクラスを使ってAlertDialogの準備をする
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setTitle("");
-        alertDialogBuilder.setMessage("送信が完了しました");
+        alertDialogBuilder.setMessage("送信に成功しました");
 
         // 肯定ボタンに表示される文字列、押したときのリスナーを設定する
         alertDialogBuilder.setPositiveButton("ok",
@@ -293,21 +297,50 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    private void download(){
-        //FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        //imgRef = storageRef.child(user.getUid()).child(year +"."+ (month + 1) +"."+ day + " " + hour + ":" + minute).child(ReceiveFragment.code+ ".jpg");
-        File localFile = File.createTempFile("image","jpg");
+    private void fAlertDialog() {
+        // AlertDialog.Builderクラスを使ってAlertDialogの準備をする
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle("");
+        alertDialogBuilder.setMessage("送信に失敗しました");
 
-        imgRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                // Local temp file has been created
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
-            }
-        });
+        // 肯定ボタンに表示される文字列、押したときのリスナーを設定する
+        alertDialogBuilder.setPositiveButton("ok",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d("UI_PARTS", "肯定ボタン");
+                    }
+                });
+
+        // AlertDialogを作成して表示する
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
+    public void download(){
+        try {
+
+            //2017.9.12 0:11を入力してok押すと2017.9.12 0:11フォルダ内の203102214.jpgが取れる
+            //203102214.jpgを変数にするために先に保持しておきたい
+            //user.getUid()はアップロードした人のやつ
+
+            File localFile = File.createTempFile("image","jpg");
+            //localFile.toURI();でlocalFileのuriを取得できる
+            storageRef.child(user.getUid()).child(ReceiveFragment.cord).child("203102214.jpg").getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    // Local temp file has been created
+                    Log.d("aa","suc");
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle any errors
+                }
+            });
+
+        } catch( IOException e ) {
+
+        }
     }
 }
