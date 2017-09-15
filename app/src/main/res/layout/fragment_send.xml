@@ -21,9 +21,10 @@
         android:layout_height="wrap_content"
         android:id="@+id/sendButton"
         android:text="send"/>
-    <TextView
+    <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/judgeView"/>
+        android:id="@+id/folderName_EditText"
+        android:hint="password"/>
 
 </LinearLayout>

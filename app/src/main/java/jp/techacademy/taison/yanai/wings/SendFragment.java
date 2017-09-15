@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,6 +19,9 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class SendFragment extends Fragment {
 
+    public static String folderName;
+    EditText folderNameEditText;
+
 
     //Fragmentで表示するViewを作成するメソッド
     @Override
@@ -27,6 +31,9 @@ public class SendFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_send,container,false);
         MainActivity activity = (MainActivity)getActivity();
         //activity.imgView = (ImageView)v.findViewById(R.id.imgView);
+
+        folderNameEditText = (EditText)v.findViewById(R.id.folderName_EditText);
+
 
 
         return v;
@@ -54,6 +61,7 @@ public class SendFragment extends Fragment {
         view.findViewById(R.id.sendButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                folderName = folderNameEditText.getText().toString();
                 MainActivity activity = (MainActivity)getActivity();
                 activity.onSend();
             }

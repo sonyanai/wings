@@ -3,11 +3,17 @@ package jp.techacademy.taison.yanai.wings;
 import android.Manifest;
 //import android.Manifest;これは手動で追加する
 import android.content.ClipData;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
+import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -24,6 +30,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -35,6 +43,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
     public RealmFragment fragmentRealm;
     public ProfileFragment fragmentProfile;
     public ImageView imgView;
+    DatabaseReference dataBaseReference;
+    DatabaseReference fileRef;
     FirebaseUser user;
     //firebasestrageをstrageという名前で使いますよ.これで Cloud Storage が使えるようになる
     FirebaseStorage storage;
@@ -55,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
     //private long fileSize;
     //private long totalSize;
     Uri uri;
+    int count = 0;
 
     StorageReference imgRef;
 
@@ -121,6 +134,8 @@ public class MainActivity extends AppCompatActivity {
 
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
+        //realtimeDatabaseにファイル名を保存する
+        dataBaseReference = FirebaseDatabase.getInstance().getReference();
         user = FirebaseAuth.getInstance().getCurrentUser();
 
         mFileArrayList = new ArrayList<Uri>();
@@ -249,35 +264,77 @@ public class MainActivity extends AppCompatActivity {
 
         user = FirebaseAuth.getInstance().getCurrentUser();
 
-        for(Uri mFile : mFileArrayList){
-            imgRef = storageRef.child(user.getUid()).child(year +"."+ (month + 1) +"."+ day + " " + hour + ":" + minute).child(mFile.getLastPathSegment()+ ".jpg");
-            UploadTask uploadTask = imgRef.putFile(mFile);
+        //folderがnullの時は何もしない
+        if(SendFragment.folderName != null){
+            //fileRef領域を作ってファイル名，日付け，カウントを管理する
+            fileRef = dataBaseReference.child(Const.FilePATH).child(user.getUid()).child(SendFragment.folderName);
 
-            // Register observers to listen for when the download is done or if it fails
-            uploadTask.addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    fAlertDialog();
-                    // Handle unsuccessful uploads
-                }
-            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                    // Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                    sAlertDialog();
-                }
-            });
+            for(Uri mUri : mFileArrayList){
+                //user.getUid()).child(year +"."+ (month + 1) +"."+ day + " " + hour + ":" + minuteと
+                //紐づけるパスの変数を同じにする
+                imgRef = storageRef.child(user.getUid()).child(SendFragment.folderName).child(mUri.getLastPathSegment()+ ".jpg");
+                UploadTask uploadTask = imgRef.putFile(mUri);
+
+
+                //realtimeDatabaseに送るよー
+                Map<String, String> data = new HashMap<String, String>();
+
+                //送るデータ各種
+                //日時
+                String dateString = year + "/" + String.format("%02d",(month + 1)) + "/" + String.format("%02d", day);
+                String timeString = String.format("%02d", hour) + ":" + String.format("%02d", minute);
+                String date = dateString+timeString;
+
+                //名前
+                // Preferenceから名前を取る
+                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+                String name = sp.getString(Const.NameKEY, "");
+
+                //ファイル名
+                String aaa = mUri.getPath();
+
+                data.put("date", date);
+                Log.d("bb",date);
+                data.put("name",name);
+                Log.d("bb",name);
+                data.put("count", String.valueOf(count));
+                Log.d("bb",String.valueOf(count));
+                //data.put("fileName", fileName);
+                //Log.d("bb",fileName);
+
+                fileRef.push().setValue(data);
+
+
+
+
+                // Register observers to listen for when the download is done or if it fails
+                uploadTask.addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        fAlertDialog();
+                        // Handle unsuccessful uploads
+                    }
+                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                        // Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        sAlertDialog();
+                    }
+                });
+            }
+
+            //arraylistをクリアーさせる
+            mFileArrayList.clear();
         }
-        //arraylistをクリアーさせる
-        mFileArrayList.clear();
+
     }
     public void intentLogin(){
         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
         startActivity(intent);
     }
 
-    private void sAlertDialog() {
+    public void sAlertDialog() {
         // AlertDialog.Builderクラスを使ってAlertDialogの準備をする
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setTitle("");
@@ -342,5 +399,14 @@ public class MainActivity extends AppCompatActivity {
         } catch( IOException e ) {
 
         }
+    }
+    public static String getPath(Context context, Uri uri) {
+        ContentResolver contentResolver = context.getContentResolver();
+        String[] columns = { MediaStore.Images.Media.DATA };
+        Cursor cursor = contentResolver.query(uri, columns, null, null, null);
+        cursor.moveToFirst();
+        String path = cursor.getString(0);
+        cursor.close();
+        return path;
     }
 }
