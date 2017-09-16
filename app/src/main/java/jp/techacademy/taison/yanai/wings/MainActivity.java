@@ -290,13 +290,25 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
                 String name = sp.getString(Const.NameKEY, "");
 
-                //ファイル名
+                //Uid
+                String mUid =  user.getUid();
+
+                //ファイル名を取得したい
                 String aaa = mUri.getPath();
+                //String fileName = aaa.getFileName().toString();
+                Log.d("aaa",aaa);
+
+
+
+
+
 
                 data.put("date", date);
                 Log.d("bb",date);
                 data.put("name",name);
                 Log.d("bb",name);
+                data.put("mUid", mUid);
+                Log.d("mUid",mUid);
                 data.put("count", String.valueOf(count));
                 Log.d("bb",String.valueOf(count));
                 //data.put("fileName", fileName);
@@ -400,7 +412,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
-    public static String getPath(Context context, Uri uri) {
+    /*public static String getPath(Context context, Uri uri) {
         ContentResolver contentResolver = context.getContentResolver();
         String[] columns = { MediaStore.Images.Media.DATA };
         Cursor cursor = contentResolver.query(uri, columns, null, null, null);
@@ -408,5 +420,5 @@ public class MainActivity extends AppCompatActivity {
         String path = cursor.getString(0);
         cursor.close();
         return path;
-    }
+    }*/
 }
