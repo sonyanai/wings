@@ -400,6 +400,10 @@ public class MainActivity extends AppCompatActivity {
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                     // Local temp file has been created
                     Log.d("aa","suc");
+
+                    //count += 1;
+                    //fileRef.changeEventListener(mEventListener);
+
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
