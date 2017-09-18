@@ -24,10 +24,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -57,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     public RealmFragment fragmentRealm;
     public ProfileFragment fragmentProfile;
     public ImageView imgView;
+    public static String variable;
     DatabaseReference dataBaseReference;
     //public static DatabaseReference fileRef;
     DatabaseReference fileRef;
@@ -67,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
     StorageReference storageRef;
     //private long fileSize;
     //private long totalSize;
+    private FirebaseAuth mAuth;
     Uri uri;
     int count = 0;
 
@@ -138,12 +145,13 @@ public class MainActivity extends AppCompatActivity {
         //realtimeDatabaseにファイル名を保存する
         dataBaseReference = FirebaseDatabase.getInstance().getReference();
         user = FirebaseAuth.getInstance().getCurrentUser();
+        //匿名認証のやつ
+        mAuth = FirebaseAuth.getInstance();
 
         mFileArrayList = new ArrayList<Uri>();
+        variable = "a";
 
 
-
-        Log.d("userName",user.toString());
 
 
 
@@ -166,6 +174,35 @@ public class MainActivity extends AppCompatActivity {
         //リスナーのセット
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        mAuth.signInAnonymously()
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d("sign", "signInAnonymously:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            if (user == null){
+                                Log.w("sign", "signInAnonymously:failure", task.getException());
+                                variable = "ログインに失敗しました1";
+                                AlertDialog();
+                            }
+
+                        }
+
+                        // ...
+                    }
+                });
+    }
+
 
 
     public void onSelfCheck() {
@@ -267,7 +304,11 @@ public class MainActivity extends AppCompatActivity {
         //storage = FirebaseStorage.getInstance();
         //storageRef = storage.getReference();
 
+
         user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null){
+            intentLogin();
+        }
 
         //folderがnullの時は何もしない
         if(SendFragment.folderName != null){
@@ -300,8 +341,9 @@ public class MainActivity extends AppCompatActivity {
 
                 //ファイル名を取得したい
                 String aaa = mUri.getPath();
-                //String fileName = aaa.getFileName().toString();
-                Log.d("aaa",aaa);
+                String bbb = new File(aaa).getName();
+                String fileName =bbb+".jpg";
+
 
 
 
@@ -309,18 +351,12 @@ public class MainActivity extends AppCompatActivity {
 
 
                 data.put("date", date);
-                Log.d("bb",date);
                 data.put("name",name);
-                Log.d("bb",name);
                 data.put("mUid", mUid);
-                Log.d("mUid",mUid);
                 data.put("count", String.valueOf(count));
-                Log.d("bb",String.valueOf(count));
-                //data.put("fileName", fileName);
-                //Log.d("bb",fileName);
+                data.put("fileName", fileName);
 
                 fileRef.push().setValue(data);
-                Log.d("fileRef",fileRef.toString());
 
 
 
@@ -329,7 +365,8 @@ public class MainActivity extends AppCompatActivity {
                 uploadTask.addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
-                        fAlertDialog();
+                        variable = "送信に失敗しました";
+                        AlertDialog();
                         // Handle unsuccessful uploads
                     }
                 }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -337,7 +374,8 @@ public class MainActivity extends AppCompatActivity {
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                         // Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                        sAlertDialog();
+                        variable = "送信に成功しました";
+                        AlertDialog();
                     }
                 });
             }
@@ -352,11 +390,12 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void sAlertDialog() {
+    public void AlertDialog() {
         // AlertDialog.Builderクラスを使ってAlertDialogの準備をする
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setTitle("");
-        alertDialogBuilder.setMessage("送信に成功しました");
+        //alertDialogBuilder.setMessage("送信に成功しました");
+        alertDialogBuilder.setMessage(variable);
 
         // 肯定ボタンに表示される文字列、押したときのリスナーを設定する
         alertDialogBuilder.setPositiveButton("ok",
@@ -372,25 +411,7 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    private void fAlertDialog() {
-        // AlertDialog.Builderクラスを使ってAlertDialogの準備をする
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setTitle("");
-        alertDialogBuilder.setMessage("送信に失敗しました");
 
-        // 肯定ボタンに表示される文字列、押したときのリスナーを設定する
-        alertDialogBuilder.setPositiveButton("ok",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Log.d("UI_PARTS", "肯定ボタン");
-                    }
-                });
-
-        // AlertDialogを作成して表示する
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-    }
 
     public void download(){
         try {
@@ -422,13 +443,10 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
-    /*public static String getPath(Context context, Uri uri) {
-        ContentResolver contentResolver = context.getContentResolver();
-        String[] columns = { MediaStore.Images.Media.DATA };
-        Cursor cursor = contentResolver.query(uri, columns, null, null, null);
-        cursor.moveToFirst();
-        String path = cursor.getString(0);
-        cursor.close();
-        return path;
-    }*/
+
+    public void notKeyboard(){
+        // キーボードが出てたら閉じる
+        //InputMethodManager im = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        //im.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    }
 }

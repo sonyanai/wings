@@ -131,23 +131,21 @@ public class ReceiveFragment extends Fragment {
         super.onViewCreated(view,savedInstanceState);
 
         dataBaseReference = FirebaseDatabase.getInstance().getReference();
-        if (user != null){
+        if (user == null){
             user = FirebaseAuth.getInstance().getCurrentUser();
         }
-        Log.d("dataBaseReference",user.getUid());
-        Log.d("dataBaseReference",dataBaseReference.toString());
-        Log.d("FilePath",Const.FilePATH);
+
 
         filePathRef = dataBaseReference.child(Const.FilePATH);
-        fileNameRef = filePathRef.child(user.getUid());
-        fileTotalRef = fileNameRef.child(SendFragment.folderName);
-        fileRef = fileTotalRef;
+        /*fileNameRef = filePathRef.child(user.getUid());
+        //fileTotalRef = fileNameRef.child(SendFragment.folderName);
+        fileTotalRef = fileNameRef.child("gg");
+        fileRef = fileTotalRef;*/
 
 
-        Log.d("fileRef",fileRef.toString());
-
+        MainActivity.variable = "ログインに成功しました";
         MainActivity activity = (MainActivity)getActivity();
-        activity.sAlertDialog();
+        activity.AlertDialog();
 
         //MainActivity.fileRef.addChildEventListener(mEventListener);
         //fileRef.addChildEventListener(mEventListener);
