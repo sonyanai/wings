@@ -26,6 +26,7 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -49,7 +50,10 @@ public class ReceiveFragment extends Fragment {
     private GridListAdapter mAdapter;
     public static String cord;
     DatabaseReference dataBaseReference;
+    DatabaseReference filePathRef;
     DatabaseReference fileRef;
+    DatabaseReference fileNameRef;
+    DatabaseReference fileTotalRef;
     FirebaseUser user;
     Button searchButton;
     EditText cordEdit;
@@ -126,18 +130,29 @@ public class ReceiveFragment extends Fragment {
     public void onViewCreated(View view,Bundle savedInstanceState){
         super.onViewCreated(view,savedInstanceState);
 
-        //user = FirebaseAuth.getInstance().getCurrentUser();
-        //fileRef = dataBaseReference.child(Const.FilePATH).child(user.getUid()).child(SendFragment.folderName);
+        dataBaseReference = FirebaseDatabase.getInstance().getReference();
+        if (user != null){
+            user = FirebaseAuth.getInstance().getCurrentUser();
+        }
+        Log.d("dataBaseReference",user.getUid());
+        Log.d("dataBaseReference",dataBaseReference.toString());
+        Log.d("FilePath",Const.FilePATH);
 
-        //Log.d("fileRef",fileRef);
+        filePathRef = dataBaseReference.child(Const.FilePATH);
+        fileNameRef = filePathRef.child(user.getUid());
+        fileTotalRef = fileNameRef.child(SendFragment.folderName);
+        fileRef = fileTotalRef;
+
+
+        Log.d("fileRef",fileRef.toString());
 
         MainActivity activity = (MainActivity)getActivity();
         activity.sAlertDialog();
-/*
+
         //MainActivity.fileRef.addChildEventListener(mEventListener);
-        fileRef.addChildEventListener(mEventListener);
+        //fileRef.addChildEventListener(mEventListener);
 
-
+/*
 
 
         //gridList.clear();

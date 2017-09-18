@@ -58,7 +58,8 @@ public class MainActivity extends AppCompatActivity {
     public ProfileFragment fragmentProfile;
     public ImageView imgView;
     DatabaseReference dataBaseReference;
-    public static DatabaseReference fileRef;
+    //public static DatabaseReference fileRef;
+    DatabaseReference fileRef;
     FirebaseUser user;
     //firebasestrageをstrageという名前で使いますよ.これで Cloud Storage が使えるようになる
     FirebaseStorage storage;
@@ -139,6 +140,10 @@ public class MainActivity extends AppCompatActivity {
         user = FirebaseAuth.getInstance().getCurrentUser();
 
         mFileArrayList = new ArrayList<Uri>();
+
+
+
+        Log.d("userName",user.toString());
 
 
 
@@ -315,6 +320,7 @@ public class MainActivity extends AppCompatActivity {
                 //Log.d("bb",fileName);
 
                 fileRef.push().setValue(data);
+                Log.d("fileRef",fileRef.toString());
 
 
 
