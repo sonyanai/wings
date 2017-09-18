@@ -126,12 +126,14 @@ public class ReceiveFragment extends Fragment {
     public void onViewCreated(View view,Bundle savedInstanceState){
         super.onViewCreated(view,savedInstanceState);
 
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        fileRef = dataBaseReference.child(Const.FilePATH).child(user.getUid()).child(SendFragment.folderName);
+        //user = FirebaseAuth.getInstance().getCurrentUser();
+        //fileRef = dataBaseReference.child(Const.FilePATH).child(user.getUid()).child(SendFragment.folderName);
+
+        //Log.d("fileRef",fileRef);
 
         MainActivity activity = (MainActivity)getActivity();
         activity.sAlertDialog();
-
+/*
         //MainActivity.fileRef.addChildEventListener(mEventListener);
         fileRef.addChildEventListener(mEventListener);
 
@@ -160,7 +162,7 @@ public class ReceiveFragment extends Fragment {
         // それのパスを取り出す method
         //getImagePath();
 
-
+*/
 
 
         // Buttonのクリックした時の処理を書きます
