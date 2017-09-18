@@ -20,7 +20,7 @@ class ViewHolder {
 }
 
 // BaseAdapter を継承した GridAdapter クラスのインスタンス生成
-class GridListAdapter extends BaseAdapter {
+public class GridListAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     private int layoutId;
     private ArrayList<ImageData> gridList = new ArrayList<ImageData>();

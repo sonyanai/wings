@@ -10,6 +10,7 @@ public class ImageData {
     private String mUid;
     private String mDate;
     private String mFileName;
+    private String mName;
     //private Bitmap mImageView;
     private byte[] mBitmapArray;
     //private int mCount;
@@ -26,6 +27,10 @@ public class ImageData {
         return mFileName;
     }
 
+    public String getmName(){
+        return mName;
+    }
+
     /*public Bitmap getImageView(){
         return mImageView;
     }*/
@@ -37,10 +42,11 @@ public class ImageData {
         return mCount;
     }*/
 
-    public ImageData(String uid, String date, String fileName, byte[] imageBytes) {
+    public ImageData(String uid, String date, String fileName, String name ) {
         mUid = uid;
         mDate = date;
         mFileName = fileName;
+        mName = name;
         //mImageView = imageView;
         //mBitmapArray = imageBytes;
         //mCount = count;

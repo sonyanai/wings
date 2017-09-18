@@ -8,6 +8,8 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Layout;
+import android.text.style.ImageSpan;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +22,9 @@ import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -28,6 +33,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -37,12 +43,67 @@ import java.util.ArrayList;
 //Fraggmentクラスを継承する
 public class ReceiveFragment extends Fragment {
 
-    private ArrayList<ImageData> gridList = new ArrayList<ImageData>();
-    //private GridListAdapter mAdapter;
+    //receiveFragmentを開いたときに出てくるgridViewのリスト
+    private ArrayList<ImageData> gridList = new ArrayList<ImageData>();  //ImageDataList
+    private ArrayList<String> list = new ArrayList<String>();
+    private GridListAdapter mAdapter;
     public static String cord;
+    DatabaseReference dataBaseReference;
+    DatabaseReference fileRef;
+    FirebaseUser user;
     Button searchButton;
     EditText cordEdit;
     GridView gridView;
+
+
+    private ChildEventListener mEventListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            HashMap map = (HashMap) dataSnapshot.getValue();
+            //data.put("fileName", fileName);
+            //Log.d("bb",fileName);
+            String date = (String) map.get("date");
+            String name = (String) map.get("name");
+            String mUid = (String) map.get("mUid");
+            String count = (String) map.get("count");
+            //String fileName = (String) map.get("fileName");
+            /*String imageString = (String) map.get("image");
+            byte[] bytes;
+            if (imageString != null) {
+                bytes = Base64.decode(imageString, Base64.DEFAULT);
+            } else {
+                bytes = new byte[0];
+            }*/
+
+            ImageData post = new ImageData(date, name, mUid, count );
+            gridList.add(post);
+            mAdapter.notifyDataSetChanged();
+        }
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+
+
+            //ここでcountの変更を反映させる
+
+
+
+        }
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
 
 
    //Fragmentで表示するViewを作成するメソッド
@@ -65,16 +126,33 @@ public class ReceiveFragment extends Fragment {
     public void onViewCreated(View view,Bundle savedInstanceState){
         super.onViewCreated(view,savedInstanceState);
 
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        fileRef = dataBaseReference.child(Const.FilePATH).child(user.getUid()).child(SendFragment.folderName);
+
         MainActivity activity = (MainActivity)getActivity();
         activity.sAlertDialog();
 
+        //MainActivity.fileRef.addChildEventListener(mEventListener);
+        fileRef.addChildEventListener(mEventListener);
 
-        gridList.clear();
-        GridListAdapter mAdapter = new GridListAdapter(this.getActivity(), R.layout.grid_items, gridList);
+
+
+
+        //gridList.clear();
+        //ファイル名が入ったやつ
+        list = new ArrayList<String>();
+        //ImageDataが入ってるやつ
+        gridList = new ArrayList<ImageData>();
+        String nn;
+        for (ImageData n :gridList){
+            nn = n.getFileName();
+            list.add(nn);
+        }
+        mAdapter = new GridListAdapter(this.getActivity(), R.layout.grid_items, gridList);
         //mAdapter.setListAdapter(gridList);
         // BaseAdapter を継承したGridAdapterのインスタンスを生成
         // 子要素のレイアウトファイル grid_items.xml を activity_main.xml に inflate するためにGridAdapterに引数として渡す
-        //mAdapter = new GridListAdapter(this.getApplicationContext(), R.layout.grid_items, gridList);
+        mAdapter.notifyDataSetChanged();
         // gridViewにadapterをセット
         gridView.setAdapter(mAdapter);
 

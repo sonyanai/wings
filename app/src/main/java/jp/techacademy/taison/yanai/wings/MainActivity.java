@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     public ProfileFragment fragmentProfile;
     public ImageView imgView;
     DatabaseReference dataBaseReference;
-    DatabaseReference fileRef;
+    public static DatabaseReference fileRef;
     FirebaseUser user;
     //firebasestrageをstrageという名前で使いますよ.これで Cloud Storage が使えるようになる
     FirebaseStorage storage;
