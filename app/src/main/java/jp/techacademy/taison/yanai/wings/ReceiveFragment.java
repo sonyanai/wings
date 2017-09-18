@@ -64,13 +64,12 @@ public class ReceiveFragment extends Fragment {
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
             HashMap map = (HashMap) dataSnapshot.getValue();
-            //data.put("fileName", fileName);
-            //Log.d("bb",fileName);
+
             String date = (String) map.get("date");
-            String name = (String) map.get("name");
+            //String name = (String) map.get("name");
             String mUid = (String) map.get("mUid");
             String count = (String) map.get("count");
-            //String fileName = (String) map.get("fileName");
+            String fileName = (String) map.get("fileName");
             /*String imageString = (String) map.get("image");
             byte[] bytes;
             if (imageString != null) {
@@ -79,7 +78,7 @@ public class ReceiveFragment extends Fragment {
                 bytes = new byte[0];
             }*/
 
-            ImageData post = new ImageData(date, name, mUid, count );
+            ImageData post = new ImageData(mUid, date, fileName, count );
             gridList.add(post);
             mAdapter.notifyDataSetChanged();
         }
