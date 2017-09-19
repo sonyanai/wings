@@ -81,6 +81,12 @@ public class ReceiveFragment extends Fragment {
             ImageData post = new ImageData(mUid,name, date, fileName, count );
             gridList.add(post);
             mAdapter.notifyDataSetChanged();
+            mAdapter.setImageDataArrayList(gridList);
+            gridView.setAdapter(mAdapter);
+
+            // /assets/image/以下に画像を入れています
+            // それのパスを取り出す method
+            getImagePath();
         }
         @Override
         public void onChildChanged(DataSnapshot dataSnapshot, String s) {
@@ -160,13 +166,14 @@ public class ReceiveFragment extends Fragment {
         //ImageDataが入ってるやつ
         gridList = new ArrayList<ImageData>();
         mAdapter = new GridListAdapter(this.getActivity(), R.layout.grid_items);
+/*
         mAdapter.setImageDataArrayList(gridList);
         // BaseAdapter を継承したGridAdapterのインスタンスを生成
         // 子要素のレイアウトファイル grid_items.xml を activity_main.xml に inflate するためにGridAdapterに引数として渡す
-        mAdapter.notifyDataSetChanged();
+        //mAdapter.notifyDataSetChanged();
         // gridViewにadapterをセット
         gridView.setAdapter(mAdapter);
-
+*/
         // /assets/image/以下に画像を入れています
         // それのパスを取り出す method
         //getImagePath();
