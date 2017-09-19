@@ -136,9 +136,11 @@ public class ReceiveFragment extends Fragment {
 
 
         filePathRef = dataBaseReference.child(Const.FilePATH);
-        fileNameRef = filePathRef.child(user.getUid());
+        //fileNameRef = filePathRef.child(user.getUid());
+        fileNameRef = filePathRef.child("8fnHRfgoMgP5TIE7lnqjs8vTP6Q2");
         //fileTotalRef = fileNameRef.child(SendFragment.folderName);
-        fileTotalRef = fileNameRef.child("gg");
+        //fileTotalRef = fileNameRef.child("gg").child("-KulzLzkoES30F72Wr47");
+        fileTotalRef = fileNameRef.child("kjkjk");
         fileRef = fileTotalRef;
         //fileRef = dataBaseReference.child(Const.FilePATH).child(user.getUid()).child("dgf");
 

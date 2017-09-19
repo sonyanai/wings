@@ -145,10 +145,13 @@ public class MainActivity extends AppCompatActivity {
         //realtimeDatabaseにファイル名を保存する
         dataBaseReference = FirebaseDatabase.getInstance().getReference();
         user = FirebaseAuth.getInstance().getCurrentUser();
+
         //匿名認証のやつ
         mAuth = FirebaseAuth.getInstance();
 
         mFileArrayList = new ArrayList<Uri>();
+
+        //dialogメッセージの初期値
         variable = "a";
 
 
