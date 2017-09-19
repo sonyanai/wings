@@ -155,18 +155,12 @@ public class ReceiveFragment extends Fragment {
 
 //
 
-        //gridList.clear();
+
         //ファイル名が入ったやつ
-        list = new ArrayList<String>();
         //ImageDataが入ってるやつ
         gridList = new ArrayList<ImageData>();
-        for (ImageData n :gridList){
-            String nn;
-            nn = n.getFileName();
-            list.add(nn);
-        }
         mAdapter = new GridListAdapter(this.getActivity(), R.layout.grid_items);
-        //mAdapter.setListAdapter(gridList);
+        mAdapter.setImageDataArrayList(gridList);
         // BaseAdapter を継承したGridAdapterのインスタンスを生成
         // 子要素のレイアウトファイル grid_items.xml を activity_main.xml に inflate するためにGridAdapterに引数として渡す
         mAdapter.notifyDataSetChanged();

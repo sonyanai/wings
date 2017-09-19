@@ -70,4 +70,7 @@ public class GridListAdapter extends BaseAdapter {
     public long getItemId(int position) {
         return 0;
     }
+    public void setImageDataArrayList(ArrayList<ImageData> list){
+        gridList = list;
+    }
 }
