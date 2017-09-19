@@ -67,8 +67,8 @@ public class ReceiveFragment extends Fragment {
 
             String date = (String) map.get("date");
             String name = (String) map.get("name");
-            //String mUid = (String) map.get("mUid");
-            String count = (String) map.get("count");
+            String mUid = (String) map.get("mUid");
+            int count = (int) map.get("count");
             String fileName = (String) map.get("fileName");
             /*String imageString = (String) map.get("image");
             byte[] bytes;
@@ -78,7 +78,7 @@ public class ReceiveFragment extends Fragment {
                 bytes = new byte[0];
             }*/
 
-            ImageData post = new ImageData(name, date, fileName, count );
+            ImageData post = new ImageData(mUid,name, date, fileName, count );
             gridList.add(post);
             mAdapter.notifyDataSetChanged();
         }
