@@ -1,11 +1,10 @@
 package jp.techacademy.taison.yanai.wings;
-
-
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.Layout;
 import android.text.style.ImageSpan;
@@ -19,7 +18,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
-
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -27,23 +27,20 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-
 /**
  * Created by taiso on 2017/08/27.
  */
-
 //Fraggmentクラスを継承する
 public class ReceiveFragment extends Fragment {
-
     //receiveFragmentを開いたときに出てくるgridViewのリスト
     private ArrayList<ImageData> gridList = new ArrayList<ImageData>();  //ImageDataList
     private ArrayList<String> list = new ArrayList<String>();   //fileNameList
@@ -54,22 +51,24 @@ public class ReceiveFragment extends Fragment {
     DatabaseReference fileRef;
     DatabaseReference fileNameRef;
     DatabaseReference fileTotalRef;
+    //strageの中にimgRefという領域を作りますよ
+    StorageReference storageRef;
+    //firebasestrageをstrageという名前で使いますよ.これで Cloud Storage が使えるようになる
+    FirebaseStorage storage;
     FirebaseUser user;
     Button searchButton;
     EditText cordEdit;
     GridView gridView;
-
-
-    private ChildEventListener mEventListener = new ChildEventListener() {
+    protected ChildEventListener mEventListener = new ChildEventListener() {
         @Override
-        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-            HashMap map = (HashMap) dataSnapshot.getValue();
-
-            String date = (String) map.get("date");
-            String name = (String) map.get("name");
-            String mUid = (String) map.get("mUid");
-            String count = (String) map.get("count");
-            String fileName = (String) map.get("fileName");
+        public void onChildAdded(final DataSnapshot dataSnapshot, String s) {
+            try {
+                HashMap map = (HashMap) dataSnapshot.getValue();
+                final String mUid = (String) map.get("mUid");
+                final String date = (String) map.get("date");
+                final String[] fileName = {(String) map.get("fileName")};
+                final String name = (String) map.get("name");
+                final String count = (String) map.get("count");
             /*String imageString = (String) map.get("image");
             byte[] bytes;
             if (imageString != null) {
@@ -77,49 +76,61 @@ public class ReceiveFragment extends Fragment {
             } else {
                 bytes = new byte[0];
             }*/
-
-            ImageData post = new ImageData(mUid,name, date, fileName, count );
+            /*ImageData post = new ImageData(mUid,name, date, fileName, count );
             gridList.add(post);
             mAdapter.notifyDataSetChanged();
             mAdapter.setImageDataArrayList(gridList);
-            gridView.setAdapter(mAdapter);
-
+            gridView.setAdapter(mAdapter);*/
+                //2017.9.12 0:11を入力してok押すと2017.9.12 0:11フォルダ内の203102214.jpgが取れる
+                //203102214.jpgを変数にするために先に保持しておきたい
+                //user.getUid()はアップロードした人のやつ
+                final File localFile = File.createTempFile("image","jpg");
+                //localFile.toURI();でlocalFileのuriを取得できる
+                storageRef.child("8fnHRfgoMgP5TIE7lnqjs8vTP6Q2").child("kjkjk").child(fileName[0]).getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    //storageRef.child(user.getUid()).child("kjkjk").child("203102214.jpg").getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        // Local temp file has been created
+                        Log.d("aa","suc");
+                        //count += 1;
+                        //fileRef.changeEventListener(mEventListener);
+                        fileName[0] = localFile.toString();
+                        ImageData post = new ImageData(mUid, date, fileName[0], name, count );
+                        gridList.add(post);
+                        mAdapter.setImageDataArrayList(gridList);
+                        gridView.setAdapter(mAdapter);
+                        mAdapter.notifyDataSetChanged();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle any errors
+                    }
+                });
+            } catch( IOException e ) {
+            }
             // /assets/image/以下に画像を入れています
             // それのパスを取り出す method
             getImagePath();
         }
         @Override
         public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-
-
             //ここでcountの変更を反映させる
-
-
-
         }
         @Override
         public void onChildRemoved(DataSnapshot dataSnapshot) {
-
         }
-
         @Override
         public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
         }
-
         @Override
         public void onCancelled(DatabaseError databaseError) {
-
         }
     };
-
-
-   //Fragmentで表示するViewを作成するメソッド
+    //Fragmentで表示するViewを作成するメソッド
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){
         super.onCreateView(inflater,container,savedInstanceState);
-
         View v = inflater.inflate(R.layout.fragment_receive,container,false);
         MainActivity activity = (MainActivity)getActivity();
         //ReceiveActivityで引っ張ってくるUI
@@ -127,20 +138,15 @@ public class ReceiveFragment extends Fragment {
         cordEdit = (EditText)v.findViewById(R.id.cordEdit);
         // GridViewのインスタンスを生成
         gridView = (GridView)v.findViewById(R.id.rankingGridView);
-
         return v;
     }
-
     //Viewが生成し終わった時に呼ばれるメソッド
     public void onViewCreated(View view,Bundle savedInstanceState){
         super.onViewCreated(view,savedInstanceState);
-
         dataBaseReference = FirebaseDatabase.getInstance().getReference();
         if (user == null){
             user = FirebaseAuth.getInstance().getCurrentUser();
         }
-
-
         filePathRef = dataBaseReference.child(Const.FilePATH);
         //fileNameRef = filePathRef.child(user.getUid());
         fileNameRef = filePathRef.child("8fnHRfgoMgP5TIE7lnqjs8vTP6Q2");
@@ -149,19 +155,14 @@ public class ReceiveFragment extends Fragment {
         fileTotalRef = fileNameRef.child("kjkjk");
         fileRef = fileTotalRef;
         //fileRef = dataBaseReference.child(Const.FilePATH).child(user.getUid()).child("dgf");
-
-
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference();
         MainActivity.variable = "ログインに成功しました";
         MainActivity activity = (MainActivity)getActivity();
         activity.AlertDialog();
-
         //MainActivity.fileRef.addChildEventListener(mEventListener);
         fileRef.addChildEventListener(mEventListener);
-
-
 //
-
-
         //ファイル名が入ったやつ
         //ImageDataが入ってるやつ
         gridList = new ArrayList<ImageData>();
@@ -177,10 +178,7 @@ public class ReceiveFragment extends Fragment {
         // /assets/image/以下に画像を入れています
         // それのパスを取り出す method
         //getImagePath();
-
 //
-
-
         // Buttonのクリックした時の処理を書きます
         view.findViewById(R.id.searchButton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -188,8 +186,6 @@ public class ReceiveFragment extends Fragment {
                 cord = cordEdit.getText().toString();
                 MainActivity activity = (MainActivity)getActivity();
                 activity.download();
-
-
                 //assetsに画像を保存する
                 //assesフォルダに入っているaisha_3.jpgを表示させる
                 try {
@@ -199,35 +195,27 @@ public class ReceiveFragment extends Fragment {
                 } catch (IOException e) {
                     Log.d("Assets","Error");
                 }
-
             }
         });
     }
-
-
-
     private void getImagePath() {
         AssetManager assetManager = getResources().getAssets();
         String[] fileList = null;
         InputStream input = null;
         FileOutputStream output = null;
         String destPath = null;
-
         try {
             // ファイルリストを作成する
             fileList = assetManager.list("image");
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         for(int i=0; i< fileList.length ; i++){
             try{
                 input = assetManager.open("image/" + fileList[i]);
                 // 保存先のパス
                 destPath = "/data/data/"+getActivity().getPackageName()+"/" + fileList[i];
-
                 output=new FileOutputStream(destPath);
-
                 // bufferの設定
                 int DEFAULT_BUFFER_SIZE = 10240 * 4;
                 byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
@@ -246,8 +234,36 @@ public class ReceiveFragment extends Fragment {
             // List<String> imgList にはファイルのパスを入れる
             //imageDataを作ってから
             //gridList.add(destPath);
-
         }
     }
-
+    /*
+    private void tryCatch(){
+        try {
+            //2017.9.12 0:11を入力してok押すと2017.9.12 0:11フォルダ内の203102214.jpgが取れる
+            //203102214.jpgを変数にするために先に保持しておきたい
+            //user.getUid()はアップロードした人のやつ
+            String fileName = null;
+            File localFile = File.createTempFile("image","jpg");
+            //localFile.toURI();でlocalFileのuriを取得できる
+            storageRef.child(user.getUid()).child("kjkjk").child(fileName).getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                //storageRef.child(user.getUid()).child("kjkjk").child("203102214.jpg").getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    // Local temp file has been created
+                    Log.d("aa","suc");
+                    //count += 1;
+                    //fileRef.changeEventListener(mEventListener);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle any errors
+                }
+            });
+        } catch( IOException e ) {
+        }
+    }
+*/
 }
+
+

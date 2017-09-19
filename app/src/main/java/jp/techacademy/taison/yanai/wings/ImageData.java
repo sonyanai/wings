@@ -35,9 +35,9 @@ public class ImageData {
         return mImageView;
     }*/
 
-    public byte[] getImageBytes(){
+    /*public byte[] getImageBytes(){
         return mBitmapArray;
-    }
+    }*/
     public String getCount(){
         return mCount;
     }
