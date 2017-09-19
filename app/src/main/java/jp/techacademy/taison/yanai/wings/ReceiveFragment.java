@@ -46,7 +46,7 @@ public class ReceiveFragment extends Fragment {
 
     //receiveFragmentを開いたときに出てくるgridViewのリスト
     private ArrayList<ImageData> gridList = new ArrayList<ImageData>();  //ImageDataList
-    private ArrayList<String> list = new ArrayList<String>();
+    private ArrayList<String> list = new ArrayList<String>();   //fileNameList
     private GridListAdapter mAdapter;
     public static String cord;
     DatabaseReference dataBaseReference;
@@ -66,8 +66,8 @@ public class ReceiveFragment extends Fragment {
             HashMap map = (HashMap) dataSnapshot.getValue();
 
             String date = (String) map.get("date");
-            //String name = (String) map.get("name");
-            String mUid = (String) map.get("mUid");
+            String name = (String) map.get("name");
+            //String mUid = (String) map.get("mUid");
             String count = (String) map.get("count");
             String fileName = (String) map.get("fileName");
             /*String imageString = (String) map.get("image");
@@ -78,7 +78,7 @@ public class ReceiveFragment extends Fragment {
                 bytes = new byte[0];
             }*/
 
-            ImageData post = new ImageData(mUid, date, fileName, count );
+            ImageData post = new ImageData(name, date, fileName, count );
             gridList.add(post);
             mAdapter.notifyDataSetChanged();
         }
@@ -136,10 +136,11 @@ public class ReceiveFragment extends Fragment {
 
 
         filePathRef = dataBaseReference.child(Const.FilePATH);
-        /*fileNameRef = filePathRef.child(user.getUid());
+        fileNameRef = filePathRef.child(user.getUid());
         //fileTotalRef = fileNameRef.child(SendFragment.folderName);
         fileTotalRef = fileNameRef.child("gg");
-        fileRef = fileTotalRef;*/
+        fileRef = fileTotalRef;
+        //fileRef = dataBaseReference.child(Const.FilePATH).child(user.getUid()).child("dgf");
 
 
         MainActivity.variable = "ログインに成功しました";
@@ -147,22 +148,22 @@ public class ReceiveFragment extends Fragment {
         activity.AlertDialog();
 
         //MainActivity.fileRef.addChildEventListener(mEventListener);
-        //fileRef.addChildEventListener(mEventListener);
+        fileRef.addChildEventListener(mEventListener);
 
-/*
 
+//
 
         //gridList.clear();
         //ファイル名が入ったやつ
         list = new ArrayList<String>();
         //ImageDataが入ってるやつ
         gridList = new ArrayList<ImageData>();
-        String nn;
         for (ImageData n :gridList){
+            String nn;
             nn = n.getFileName();
             list.add(nn);
         }
-        mAdapter = new GridListAdapter(this.getActivity(), R.layout.grid_items, gridList);
+        mAdapter = new GridListAdapter(this.getActivity(), R.layout.grid_items, list);
         //mAdapter.setListAdapter(gridList);
         // BaseAdapter を継承したGridAdapterのインスタンスを生成
         // 子要素のレイアウトファイル grid_items.xml を activity_main.xml に inflate するためにGridAdapterに引数として渡す
@@ -174,7 +175,7 @@ public class ReceiveFragment extends Fragment {
         // それのパスを取り出す method
         //getImagePath();
 
-*/
+//
 
 
         // Buttonのクリックした時の処理を書きます
