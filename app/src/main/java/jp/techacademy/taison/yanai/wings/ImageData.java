@@ -13,7 +13,7 @@ public class ImageData {
     private String mName;
     //private Bitmap mImageView;
     private byte[] mBitmapArray;
-    private int mCount;
+    private String mCount;
 
     public String getUid(){
         return mUid;
@@ -38,11 +38,11 @@ public class ImageData {
     public byte[] getImageBytes(){
         return mBitmapArray;
     }
-    public int getCount(){
+    public String getCount(){
         return mCount;
     }
 
-    public ImageData(String uid, String date, String fileName, String name,int count ) {
+    public ImageData(String uid, String date, String fileName, String name,String count ) {
         mUid = uid;
         mDate = date;
         mFileName = fileName;
