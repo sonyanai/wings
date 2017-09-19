@@ -23,9 +23,9 @@ class ViewHolder {
 public class GridListAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     private int layoutId;
-    private ArrayList<String> list = new ArrayList<String>();
+    private ArrayList<ImageData> gridList = new ArrayList<ImageData>();
 
-    public GridListAdapter(Context context,  int layoutId, ArrayList<String> list) {
+    public GridListAdapter(Context context,  int layoutId) {
         super();
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.layoutId = layoutId;
@@ -34,7 +34,7 @@ public class GridListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         //ファイル名
-        String mFilepath = list.get(position);
+        String mFilepath = gridList.get(position).getFileName();
 
         ViewHolder holder;
         if (convertView == null) {
@@ -58,7 +58,7 @@ public class GridListAdapter extends BaseAdapter {
     @Override
     public int getCount() {
         // List<String> imgList の全要素数を返す
-        return list.size();
+        return gridList.size();
     }
 
     @Override

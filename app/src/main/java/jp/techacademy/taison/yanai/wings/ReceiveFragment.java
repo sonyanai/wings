@@ -165,7 +165,7 @@ public class ReceiveFragment extends Fragment {
             nn = n.getFileName();
             list.add(nn);
         }
-        mAdapter = new GridListAdapter(this.getActivity(), R.layout.grid_items, list);
+        mAdapter = new GridListAdapter(this.getActivity(), R.layout.grid_items);
         //mAdapter.setListAdapter(gridList);
         // BaseAdapter を継承したGridAdapterのインスタンスを生成
         // 子要素のレイアウトファイル grid_items.xml を activity_main.xml に inflate するためにGridAdapterに引数として渡す
