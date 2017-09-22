@@ -59,75 +59,6 @@ public class ReceiveFragment extends Fragment {
     EditText cordEdit;
     GridView gridView;
 
-/*    protected ChildEventListener mEventListener = new ChildEventListener() {
-        @Override
-        public void onChildAdded(final DataSnapshot dataSnapshot, String s) {
-            try {
-                HashMap map = (HashMap) dataSnapshot.getValue();
-                final String mUid = (String) map.get("mUid");
-                final String date = (String) map.get("date");
-                final String[] fileName = {(String) map.get("fileName")};
-                final String name = (String) map.get("name");
-                final String count = (String) map.get("count");
-            /*String imageString = (String) map.get("image");
-            byte[] bytes;
-            if (imageString != null) {
-                bytes = Base64.decode(imageString, Base64.DEFAULT);
-            } else {
-                bytes = new byte[0];
-            }*/
-            /*ImageData post = new ImageData(mUid,name, date, fileName, count );
-            gridList.add(post);
-            mAdapter.notifyDataSetChanged();
-            mAdapter.setImageDataArrayList(gridList);
-            gridView.setAdapter(mAdapter);*/
-                //2017.9.12 0:11を入力してok押すと2017.9.12 0:11フォルダ内の203102214.jpgが取れる
-                //203102214.jpgを変数にするために先に保持しておきたい
-                //user.getUid()はアップロードした人のやつ
-/*                final File localFile = File.createTempFile("image","jpg");
-                //localFile.toURI();でlocalFileのuriを取得できる
-                storageRef.child("8fnHRfgoMgP5TIE7lnqjs8vTP6Q2").child("kjkjk").child(fileName[0]).getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                    //storageRef.child(user.getUid()).child("kjkjk").child("203102214.jpg").getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                        // Local temp file has been created
-                        Log.d("aa","suc");
-                        //count += 1;
-                        //fileRef.changeEventListener(mEventListener);
-                        fileName[0] = localFile.toString();
-                        ImageData post = new ImageData(mUid, date, fileName[0], name, count );
-                        gridList.add(post);
-                        mAdapter.setImageDataArrayList(gridList);
-                        gridView.setAdapter(mAdapter);
-                        mAdapter.notifyDataSetChanged();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        // Handle any errors
-                        Log.d("aaaa","filure");
-                    }
-                });
-            } catch( IOException e ) {
-            }
-            // /assets/image/以下に画像を入れています
-            // それのパスを取り出す method
-            getImagePath();
-        }
-        @Override
-        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-            //ここでcountの変更を反映させる
-        }
-        @Override
-        public void onChildRemoved(DataSnapshot dataSnapshot) {
-        }
-        @Override
-        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-        }
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-        }
-    };*/
     //Fragmentで表示するViewを作成するメソッド
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){
@@ -171,28 +102,7 @@ public class ReceiveFragment extends Fragment {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        //mEventListenerの設定と初期化
         ChildEventListener mEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(final DataSnapshot dataSnapshot, String s) {
@@ -267,25 +177,6 @@ public class ReceiveFragment extends Fragment {
             }
         };
 
-        //fileRef.addChildEventListener(mEventListener);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         //dialogの表示
@@ -302,20 +193,7 @@ public class ReceiveFragment extends Fragment {
         //mEventListenerの呼び出し
         //MainActivity.fileRef.addChildEventListener(mEventListener);
         fileRef.addChildEventListener(mEventListener);
-//
 
-/*
-        mAdapter.setImageDataArrayList(gridList);
-        // BaseAdapter を継承したGridAdapterのインスタンスを生成
-        // 子要素のレイアウトファイル grid_items.xml を activity_main.xml に inflate するためにGridAdapterに引数として渡す
-        //mAdapter.notifyDataSetChanged();
-        // gridViewにadapterをセット
-        gridView.setAdapter(mAdapter);
-*/
-        // /assets/image/以下に画像を入れています
-        // それのパスを取り出す method
-        //getImagePath();
-//
         // Buttonのクリックした時の処理を書きます
         view.findViewById(R.id.searchButton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -374,34 +252,6 @@ public class ReceiveFragment extends Fragment {
             //gridList.add(destPath);
         }
     }
-    /*
-    private void tryCatch(){
-        try {
-            //2017.9.12 0:11を入力してok押すと2017.9.12 0:11フォルダ内の203102214.jpgが取れる
-            //203102214.jpgを変数にするために先に保持しておきたい
-            //user.getUid()はアップロードした人のやつ
-            String fileName = null;
-            File localFile = File.createTempFile("image","jpg");
-            //localFile.toURI();でlocalFileのuriを取得できる
-            storageRef.child(user.getUid()).child("kjkjk").child(fileName).getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                //storageRef.child(user.getUid()).child("kjkjk").child("203102214.jpg").getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    // Local temp file has been created
-                    Log.d("aa","suc");
-                    //count += 1;
-                    //fileRef.changeEventListener(mEventListener);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle any errors
-                }
-            });
-        } catch( IOException e ) {
-        }
-    }
-*/
 }
 
 
