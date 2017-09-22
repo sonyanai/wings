@@ -37,7 +37,7 @@ import java.util.HashMap;
 public class ReceiveFragment extends Fragment {
     //receiveFragmentを開いたときに出てくるgridViewのリスト
     private ArrayList<ImageData> gridList = new ArrayList<ImageData>();  //ImageDataList
-    private ArrayList<String> list = new ArrayList<String>();   //fileNameList
+    //private ArrayList<String> list = new ArrayList<String>();   //fileNameList
     private GridListAdapter mAdapter;
     public static String cord;
     DatabaseReference dataBaseReference;
