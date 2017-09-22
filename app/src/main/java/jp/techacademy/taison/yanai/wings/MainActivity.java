@@ -24,6 +24,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -69,15 +70,16 @@ public class MainActivity extends AppCompatActivity {
     FirebaseUser user;
     //firebasestrageをstrageという名前で使いますよ.これで Cloud Storage が使えるようになる
     FirebaseStorage storage;
-    //strageの中にimgRefという領域を作りますよ
     StorageReference storageRef;
+    //strageの中にimgRefという領域を作りますよ
+    StorageReference imgRef;
     //private long fileSize;
     //private long totalSize;
     private FirebaseAuth mAuth;
     Uri uri;
     int count = 0;
 
-    StorageReference imgRef;
+
 
     final Calendar calendar = Calendar.getInstance();
 
@@ -315,15 +317,16 @@ public class MainActivity extends AppCompatActivity {
 
         //folderがnullの時は何もしない
         if(SendFragment.folderName != null){
-            //fileRef領域を作ってファイル名，日付け，カウントを管理する
+
+            //realtimeDatabaseにfileRef領域を作ってファイル名，日付け，カウントを管理する
             fileRef = dataBaseReference.child(Const.FilePATH).child(user.getUid()).child(SendFragment.folderName);
 
+
             for(Uri mUri : mFileArrayList){
-                //user.getUid()).child(year +"."+ (month + 1) +"."+ day + " " + hour + ":" + minuteと
-                //紐づけるパスの変数を同じにする
+
+                //firebaseStorageのimgRefに動画や画像のUriを入れる
                 imgRef = storageRef.child(user.getUid()).child(SendFragment.folderName).child(mUri.getLastPathSegment()+ ".jpg");
                 UploadTask uploadTask = imgRef.putFile(mUri);
-
 
                 //realtimeDatabaseに送るよー
                 Map<String, String> data = new HashMap<String, String>();
@@ -449,7 +452,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void notKeyboard(){
         // キーボードが出てたら閉じる
-        //InputMethodManager im = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-        //im.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        InputMethodManager im = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        im.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
+        //this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
     }
 }
