@@ -94,6 +94,10 @@ public class ReceiveFragment extends Fragment {
         //firebaseStorage
         storageRef = storage.getReference();
 
+        //ImageDataが入ってるやつ
+        gridList = new ArrayList<ImageData>();
+        mAdapter = new GridListAdapter(this.getActivity(), R.layout.grid_items);
+
 
 
         //mEventListenerの設定と初期化
@@ -179,10 +183,10 @@ public class ReceiveFragment extends Fragment {
 
         //activity.notKeyboard();
 
-        //ファイル名が入ったやつ
+
         //ImageDataが入ってるやつ
-        gridList = new ArrayList<ImageData>();
-        mAdapter = new GridListAdapter(this.getActivity(), R.layout.grid_items);
+        //gridList = new ArrayList<ImageData>();
+        //mAdapter = new GridListAdapter(this.getActivity(), R.layout.grid_items);
 
         //mEventListenerの呼び出し
         //MainActivity.fileRef.addChildEventListener(mEventListener);
