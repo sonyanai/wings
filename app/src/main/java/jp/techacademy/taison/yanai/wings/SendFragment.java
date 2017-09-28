@@ -75,9 +75,9 @@ public class SendFragment extends Fragment {
                 }*/
                 if(user != null){
                     //mAuthのときはログイン
-                        MainActivity activity = (MainActivity)getActivity();
-                        activity.onSelfCheck();
-                        //activity.intentLogin();
+                    MainActivity activity = (MainActivity)getActivity();
+                    //activity.intentLogin();
+                    activity.onSelfCheck();
                 }else {
                     MainActivity activity = (MainActivity) getActivity();
                     activity.intentLogin();

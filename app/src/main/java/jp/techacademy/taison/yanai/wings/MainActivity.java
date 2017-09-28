@@ -334,10 +334,6 @@ public class MainActivity extends AppCompatActivity {
         //storageRef = storage.getReference();
 
 
-        //user = FirebaseAuth.getInstance().getCurrentUser();
-        /*if (user == null){
-            intentLogin();
-        }*/
 
         //folderがnullの時は何もしない
         if(SendFragment.folderName != null){
@@ -368,12 +364,6 @@ public class MainActivity extends AppCompatActivity {
                 // Preferenceから名前を取る
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
                 String name = sp.getString(Const.NameKEY, "");
-
-                /*
-                //ファイル名を取得したい
-                String aaa = mUri.getPath();
-                String bbb = new File(aaa).getName();
-                String fileName =bbb+".jpg";*/
 
                 //価格の取得
                 String cost = SendFragment.cost;
