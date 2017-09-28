@@ -37,7 +37,6 @@ public class SendFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_send,container,false);
         MainActivity activity = (MainActivity)getActivity();
-        //activity.imgView = (ImageView)v.findViewById(R.id.imgView);
 
         folderNameEditText = (EditText)v.findViewById(R.id.folderName_EditText);
         costEditText = (EditText)v.findViewById(R.id.cost_EditText);

@@ -16,8 +16,6 @@ import android.widget.EditText;
 import android.widget.GridView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,10 +25,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -152,7 +148,6 @@ public class ReceiveFragment extends Fragment {
                     HashMap map = (HashMap) dataSnapshot.getValue();
                     final String mUid = (String) map.get("mUid");
                     final String date = (String) map.get("date");
-                    //final String[] fileName = {(String) map.get("fileName")};
                     final String name = (String) map.get("name");
                     final String count = (String) map.get("count");
                     final String cost = (String) map.get("cost");
@@ -170,44 +165,7 @@ public class ReceiveFragment extends Fragment {
                 mAdapter.setFolderDataArrayList(folderList);
                 gridView.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();
-                    //2017.9.12 0:11を入力してok押すと2017.9.12 0:11フォルダ内の203102214.jpgが取れる
-                    //203102214.jpgを変数にするために先に保持しておきたい
-                    //user.getUid()はアップロードした人のやつ
-                    //final File localFile = File.createTempFile("image","jpg");
-                    //localFile.toURI();でlocalFileのuriを取得できる
-                    /*storageRef.child("8fnHRfgoMgP5TIE7lnqjs8vTP6Q2").child("kjkjk").child(fileName[0]).getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                        //storageRef.child(user.getUid()).child("kjkjk").child("203102214.jpg").getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                            // Local temp file has been created
-
-                            //プログレスバー読み込み終わるまで，終わらせる処理も
-
-                            Log.d("aaaaa","suc");
-                            //count += 1;
-                            //fileRef.changeEventListener(mEventListener);
-                            //fileName[0] = localFile.toString();
-                            //ImageData post = new ImageData(mUid, date, fileName[0], name, count );
-                            ImageData post = new ImageData(mUid, date, fileName[0], name, count );
-                            gridList.add(post);
-                            mAdapter.setImageDataArrayList(gridList);
-                            gridView.setAdapter(mAdapter);
-                            mAdapter.notifyDataSetChanged();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            // Handle any errors
-                            Log.d("aaaa","failure");
-                            /*allow read, write: if request.auth != null;*/
-/*                        }
-                    });
-                } catch( IOException e ) {
-                }
-                // /assets/image/以下に画像を入れています
-                // それのパスを取り出す method
-                getImagePath();
-    */        }
+            }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {

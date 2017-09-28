@@ -71,6 +71,9 @@ public class MainActivity extends AppCompatActivity {
     public static String variable;
     DatabaseReference dataBaseReference;
     //public static DatabaseReference fileRef;
+    DatabaseReference filePathRef;
+    DatabaseReference fileNameRef;
+    DatabaseReference fileTotalRef;
     DatabaseReference fileRef;
     FirebaseUser user;
     //firebasestrageをstrageという名前で使いますよ.これで Cloud Storage が使えるようになる
@@ -147,6 +150,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        //firebaseStorageの設定
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
         //realtimeDatabaseにファイル名を保存する
@@ -337,9 +342,59 @@ public class MainActivity extends AppCompatActivity {
 
         //folderがnullの時は何もしない
         if(SendFragment.folderName != null){
+            //realtimeDatabaseの設定
+            filePathRef = dataBaseReference.child(Const.FilePATH);
+            //fileNameRef = filePathRef.child(user.getUid());
+            fileNameRef = filePathRef.child(user.getUid());
+            //fileTotalRef = fileNameRef.child(SendFragment.folderName);
+            //fileTotalRef = fileNameRef.child("gg").child("-KulzLzkoES30F72Wr47");
+            fileTotalRef = fileNameRef.child(SendFragment.folderName);
+            fileRef = fileTotalRef;
 
-            //realtimeDatabaseにfileRef領域を作ってファイル名，日付け，カウントを管理する
-            fileRef = dataBaseReference.child(Const.FilePATH).child(user.getUid()).child(SendFragment.folderName);
+
+            //realtimeDatabaseに送るよー
+            Map<String, String> data = new HashMap<String, String>();
+
+            //Uid
+            String mUid =  user.getUid();
+
+            //送るデータ各種
+            //日時
+            String dateString = year + "/" + String.format("%02d",(month + 1)) + "/" + String.format("%02d", day);
+            String timeString = String.format("%02d", hour) + ":" + String.format("%02d", minute);
+            String date = dateString+timeString;
+
+            //名前
+            // Preferenceから名前を取る
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+            String name = sp.getString(Const.NameKEY, "");
+
+            //価格の取得
+            String cost = SendFragment.cost;
+
+            //フォルダ名の取得
+            String folderName = SendFragment.folderName;
+
+            //フォルダ画像の取得
+            BitmapDrawable drawable = (BitmapDrawable) SendFragment.folderImageView.getDrawable();
+            //画像を取り出しエンコードする
+            Bitmap bitmap = drawable.getBitmap();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos);
+            String bitmapString = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
+
+
+
+
+            data.put("mUid", mUid);
+            data.put("date", date);
+            data.put("name", name);
+            data.put("count", String.valueOf(count));
+            data.put("cost", cost);
+            data.put("folderName", folderName);
+            data.put("image", bitmapString);
+
+            fileRef.push().setValue(data);
 
 
             for(Uri mUri : mFileArrayList){
@@ -348,49 +403,16 @@ public class MainActivity extends AppCompatActivity {
                 imgRef = storageRef.child(user.getUid()).child(SendFragment.folderName).child(mUri.getLastPathSegment()+ ".jpg");
                 UploadTask uploadTask = imgRef.putFile(mUri);
 
-                //realtimeDatabaseに送るよー
-                Map<String, String> data = new HashMap<String, String>();
 
-                //Uid
-                String mUid =  user.getUid();
+                Map<String, String> fileNameData = new HashMap<String, String>();
 
-                //送るデータ各種
-                //日時
-                String dateString = year + "/" + String.format("%02d",(month + 1)) + "/" + String.format("%02d", day);
-                String timeString = String.format("%02d", hour) + ":" + String.format("%02d", minute);
-                String date = dateString+timeString;
+                //ファイル名を取得したい
+                String aaa = mUri.getPath();
+                String bbb = new File(aaa).getName();
+                String fileName =bbb+".jpg";
 
-                //名前
-                // Preferenceから名前を取る
-                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-                String name = sp.getString(Const.NameKEY, "");
-
-                //価格の取得
-                String cost = SendFragment.cost;
-
-                //フォルダ名の取得
-                String folderName = SendFragment.folderName;
-
-                //フォルダ画像の取得
-                BitmapDrawable drawable = (BitmapDrawable) SendFragment.folderImageView.getDrawable();
-                //画像を取り出しエンコードする
-                Bitmap bitmap = drawable.getBitmap();
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos);
-                String bitmapString = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
-
-
-                data.put("mUid", mUid);
-                data.put("date", date);
-                data.put("name", name);
-                data.put("count", String.valueOf(count));
-                data.put("cost", cost);
-                data.put("folderName", folderName);
-                data.put("image", bitmapString);
-
-                fileRef.push().setValue(data);
-
-
+                fileNameData.put("fileName", fileName);
+                fileRef.push().setValue(fileNameData);
 
 
                 // Register observers to listen for when the download is done or if it fails
@@ -411,6 +433,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
             }
+
 
             //arraylistをクリアーさせる
             mFileArrayList.clear();
