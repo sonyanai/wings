@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -250,11 +249,6 @@ public class ReceiveFragment extends Fragment {
             }catch (IOException e) {
                 e.printStackTrace();
             }
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            //ImageData imageData = new ImageData(user.getUid());
-            // List<String> imgList にはファイルのパスを入れる
-            //imageDataを作ってから
-            //gridList.add(destPath);
         }
     }
 }
