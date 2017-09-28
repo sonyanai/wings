@@ -34,7 +34,7 @@
     <GridView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/rankingGridView"
+        android:id="@+id/folderGridView"
         android:layout_gravity="center"
         android:horizontalSpacing="5dp"
         android:verticalSpacing="5dp"

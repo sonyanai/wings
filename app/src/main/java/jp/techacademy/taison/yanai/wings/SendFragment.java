@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -20,7 +21,13 @@ import com.google.firebase.auth.FirebaseUser;
 public class SendFragment extends Fragment {
 
     public static String folderName;
+    public static String cost;
     EditText folderNameEditText;
+    EditText costEditText;
+    public static ImageView folderImageView;
+    Button selectButton;
+    Button sendButton;
+    public static FirebaseUser user;
 
 
     //Fragmentで表示するViewを作成するメソッド
@@ -33,6 +40,10 @@ public class SendFragment extends Fragment {
         //activity.imgView = (ImageView)v.findViewById(R.id.imgView);
 
         folderNameEditText = (EditText)v.findViewById(R.id.folderName_EditText);
+        costEditText = (EditText)v.findViewById(R.id.cost_EditText);
+        folderImageView = (ImageView)v.findViewById(R.id.folderImageView);
+        selectButton = (Button)v.findViewById(R.id.selectButton);
+        sendButton = (Button)v.findViewById(R.id.sendButton);
 
 
 
@@ -48,13 +59,30 @@ public class SendFragment extends Fragment {
         view.findViewById(R.id.selectButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                if(user != null){
-                    MainActivity activity = (MainActivity)getActivity();
-                    activity.onSelfCheck();
+                user = FirebaseAuth.getInstance().getCurrentUser();
+                /*if(user != null){
+                    //mAuthのときはログイン
+                    if(user != 匿名ユーザーmAuth){
+                        MainActivity activity = (MainActivity)getActivity();
+                        activity.intentLogin();
+                    }else{
+                        MainActivity activity = (MainActivity)getActivity();
+                        activity.onSelfCheck();
+                    }
                 }else{
                     MainActivity activity = (MainActivity)getActivity();
                     activity.intentLogin();
+                }*/
+                if(user != null){
+                    //mAuthのときはログイン
+                        MainActivity activity = (MainActivity)getActivity();
+                        activity.onSelfCheck();
+                        //activity.intentLogin();
+                }else {
+                    MainActivity activity = (MainActivity) getActivity();
+                    activity.intentLogin();
+                    //ひとまず9.28
+                    //activity.onSelfCheck();
                 }
             }
         });
@@ -62,6 +90,7 @@ public class SendFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 folderName = folderNameEditText.getText().toString();
+                cost = costEditText.getText().toString();
                 MainActivity activity = (MainActivity)getActivity();
                 activity.onSend();
             }

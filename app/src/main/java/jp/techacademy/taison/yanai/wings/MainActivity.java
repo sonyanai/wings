@@ -10,6 +10,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -22,6 +25,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.WindowManager;
@@ -43,6 +47,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -148,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
         dataBaseReference = FirebaseDatabase.getInstance().getReference();
         user = FirebaseAuth.getInstance().getCurrentUser();
 
+
         //匿名認証のやつ
         mAuth = FirebaseAuth.getInstance();
 
@@ -184,28 +190,31 @@ public class MainActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        mAuth.signInAnonymously()
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d("sign", "signInAnonymously:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            if (user == null){
-                                Log.w("sign", "signInAnonymously:failure", task.getException());
-                                variable = "ログインに失敗しました1";
-                                AlertDialog();
+        if(user == null){
+            //FirebaseUser currentUser = mAuth.getCurrentUser();
+            mAuth.signInAnonymously()
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                Log.d("sign", "signInAnonymously:success");
+                                user = mAuth.getCurrentUser();
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                if (user == null){
+                                    Log.w("sign", "signInAnonymously:failure", task.getException());
+                                    variable = "ログインに失敗しました1";
+                                    AlertDialog();
+                                }
+
                             }
 
+                            // ...
                         }
+                    });
+        }
 
-                        // ...
-                    }
-                });
     }
 
 
@@ -280,6 +289,21 @@ public class MainActivity extends AppCompatActivity {
                         ClipData.Item item = clipData.getItemAt(i);
 
                         uri = item.getUri();
+
+                        // URIからBitmapを取得する
+                        Bitmap image;
+                        try {
+                            ContentResolver contentResolver = getContentResolver();
+                            InputStream inputStream = contentResolver.openInputStream(uri);
+                            image = BitmapFactory.decodeStream(inputStream);
+                            inputStream.close();
+                        } catch (Exception e) {
+                            return;
+                        }
+
+                        // BitmapをImageViewに設定する
+                        SendFragment.folderImageView.setImageBitmap(image);
+
                         //mFileArrayList = new ArrayList<Uri>();
                         //uriをarraylistに追加
                         mFileArrayList.add(uri);
@@ -310,10 +334,10 @@ public class MainActivity extends AppCompatActivity {
         //storageRef = storage.getReference();
 
 
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null){
+        //user = FirebaseAuth.getInstance().getCurrentUser();
+        /*if (user == null){
             intentLogin();
-        }
+        }*/
 
         //folderがnullの時は何もしない
         if(SendFragment.folderName != null){
@@ -331,6 +355,9 @@ public class MainActivity extends AppCompatActivity {
                 //realtimeDatabaseに送るよー
                 Map<String, String> data = new HashMap<String, String>();
 
+                //Uid
+                String mUid =  user.getUid();
+
                 //送るデータ各種
                 //日時
                 String dateString = year + "/" + String.format("%02d",(month + 1)) + "/" + String.format("%02d", day);
@@ -342,25 +369,34 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
                 String name = sp.getString(Const.NameKEY, "");
 
-                //Uid
-                String mUid =  user.getUid();
-
+                /*
                 //ファイル名を取得したい
                 String aaa = mUri.getPath();
                 String bbb = new File(aaa).getName();
-                String fileName =bbb+".jpg";
+                String fileName =bbb+".jpg";*/
+
+                //価格の取得
+                String cost = SendFragment.cost;
+
+                //フォルダ名の取得
+                String folderName = SendFragment.folderName;
+
+                //フォルダ画像の取得
+                BitmapDrawable drawable = (BitmapDrawable) SendFragment.folderImageView.getDrawable();
+                //画像を取り出しエンコードする
+                Bitmap bitmap = drawable.getBitmap();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos);
+                String bitmapString = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
 
 
-
-
-
-
-
-                data.put("date", date);
-                data.put("name",name);
                 data.put("mUid", mUid);
+                data.put("date", date);
+                data.put("name", name);
                 data.put("count", String.valueOf(count));
-                data.put("fileName", fileName);
+                data.put("cost", cost);
+                data.put("folderName", folderName);
+                data.put("image", bitmapString);
 
                 fileRef.push().setValue(data);
 
@@ -419,7 +455,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    public void download(){
+    /*public void download(){
         try {
 
             //2017.9.12 0:11を入力してok押すと2017.9.12 0:11フォルダ内の203102214.jpgが取れる
@@ -448,7 +484,7 @@ public class MainActivity extends AppCompatActivity {
         } catch( IOException e ) {
 
         }
-    }
+    }*/
 
     public void notKeyboard(){
         // キーボードが出てたら閉じる
@@ -457,5 +493,17 @@ public class MainActivity extends AppCompatActivity {
 
         //this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
+    }
+    public void intentWatchFragment(){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        // Fragmentを作成・初期化します
+        fragmentReceive = new ReceiveFragment();
+        // コードからFragmentを追加
+        // Fragmentの追加や削除といった変更を行う際は、Transactionを利用します
+        // 新しく追加を行うのでaddを使用します
+        // メソッドの1つ目の引数は対象のViewGroupのID、2つ目の引数は追加するfragment
+        transaction.replace(R.id.container, fragmentReceive);
+        // 最後にcommitを使用することで変更を反映します
+        transaction.commit();
     }
 }

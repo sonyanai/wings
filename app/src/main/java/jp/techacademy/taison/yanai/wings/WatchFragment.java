@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +13,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
-
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -40,11 +35,11 @@ import java.util.HashMap;
  * Created by taiso on 2017/08/27.
  */
 //Fraggmentクラスを継承する
-public class ReceiveFragment extends Fragment {
+public class WatchFragment extends Fragment {
     //receiveFragmentを開いたときに出てくるgridViewのリスト
-    private ArrayList<FolderData> folderList = new ArrayList<FolderData>();  //FolderDataList
+    private ArrayList<ImageData> gridList = new ArrayList<ImageData>();  //ImageDataList
     //private ArrayList<String> list = new ArrayList<String>();   //fileNameList
-    private FolderListAdapter mAdapter;
+    private GridListAdapter mAdapter;
     DatabaseReference dataBaseReference;
     DatabaseReference filePathRef;
     DatabaseReference fileRef;
@@ -55,22 +50,16 @@ public class ReceiveFragment extends Fragment {
     FirebaseStorage storage;
     FirebaseUser user;
     GridView gridView;
-    Button searchButton;
-    EditText cordEdit;
     public static String cord;
-    private FirebaseAuth mAuth;
 
     //Fragmentで表示するViewを作成するメソッド
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){
         super.onCreateView(inflater,container,savedInstanceState);
-        View v = inflater.inflate(R.layout.fragment_receive,container,false);
+        View v = inflater.inflate(R.layout.fragment_watch,container,false);
         MainActivity activity = (MainActivity)getActivity();
-        //ReceiveActivityで引っ張ってくるUI
-        searchButton = (Button)v.findViewById(R.id.searchButton);
-        cordEdit = (EditText)v.findViewById(R.id.cordEdit);
         // GridViewのインスタンスを生成
-        gridView = (GridView)v.findViewById(R.id.folderGridView);
+        gridView = (GridView)v.findViewById(R.id.rankingGridView);
         return v;
     }
     //Viewが生成し終わった時に呼ばれるメソッド
@@ -84,44 +73,9 @@ public class ReceiveFragment extends Fragment {
 
 
 
-        user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null){
-            //FirebaseUser currentUser = mAuth.getCurrentUser();
-            //匿名認証のやつ
-            mAuth = FirebaseAuth.getInstance();
-            mAuth.signInAnonymously()
-                    .addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
-                                Log.d("sign", "signInAnonymously:success");
-                                user = mAuth.getCurrentUser();
-                            } else {
-                                // If sign in fails, display a message to the user.
-                                if (user == null){
-                                    Log.w("sign", "signInAnonymously:failure", task.getException());
-                                    MainActivity activity = (MainActivity)getActivity();
-                                    activity.variable = "ログインに失敗しました1";
-                                    activity.AlertDialog();
-                                }
-
-                            }
-
-                            // ...
-                        }
-                    });
+            user = FirebaseAuth.getInstance().getCurrentUser();
         }
-
-
-
-        //refの調整！;
-        //あと，送るところきちんと設定する;
-
-
-
-
-
 
         //realtimeDatabase
         filePathRef = dataBaseReference.child(Const.FilePATH);
@@ -136,9 +90,9 @@ public class ReceiveFragment extends Fragment {
         //firebaseStorage
         storageRef = storage.getReference();
 
-        //FolderDataが入ってるやつ
-        folderList = new ArrayList<FolderData>();
-        mAdapter = new FolderListAdapter(this.getActivity(), R.layout.grid_items);
+        //ImageDataが入ってるやつ
+        gridList = new ArrayList<ImageData>();
+        mAdapter = new GridListAdapter(this.getActivity(), R.layout.grid_items);
 
 
 
@@ -148,34 +102,20 @@ public class ReceiveFragment extends Fragment {
         ChildEventListener mEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(final DataSnapshot dataSnapshot, String s) {
-                //try {
+                try {
                     HashMap map = (HashMap) dataSnapshot.getValue();
                     final String mUid = (String) map.get("mUid");
                     final String date = (String) map.get("date");
-                    //final String[] fileName = {(String) map.get("fileName")};
+                    final String[] fileName = {(String) map.get("fileName")};
                     final String name = (String) map.get("name");
                     final String count = (String) map.get("count");
-                    final String cost = (String) map.get("cost");
-                    final String folderName = (String) map.get("folderName");
-                    final String imageString = (String) map.get("image");
-                    byte[] bytes;
-                    if (imageString != null) {
-                        bytes = Base64.decode(imageString, Base64.DEFAULT);
-                    } else {
-                        bytes = new byte[0];
-                    }
 
-                FolderData post = new FolderData(mUid, date, name, count, cost, folderName, bytes );
-                folderList.add(post);
-                mAdapter.setFolderDataArrayList(folderList);
-                gridView.setAdapter(mAdapter);
-                mAdapter.notifyDataSetChanged();
                     //2017.9.12 0:11を入力してok押すと2017.9.12 0:11フォルダ内の203102214.jpgが取れる
                     //203102214.jpgを変数にするために先に保持しておきたい
                     //user.getUid()はアップロードした人のやつ
-                    //final File localFile = File.createTempFile("image","jpg");
+                    final File localFile = File.createTempFile("image","jpg");
                     //localFile.toURI();でlocalFileのuriを取得できる
-                    /*storageRef.child("8fnHRfgoMgP5TIE7lnqjs8vTP6Q2").child("kjkjk").child(fileName[0]).getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    storageRef.child("8fnHRfgoMgP5TIE7lnqjs8vTP6Q2").child("kjkjk").child(fileName[0]).getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                         //storageRef.child(user.getUid()).child("kjkjk").child("203102214.jpg").getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
@@ -186,8 +126,7 @@ public class ReceiveFragment extends Fragment {
                             Log.d("aaaaa","suc");
                             //count += 1;
                             //fileRef.changeEventListener(mEventListener);
-                            //fileName[0] = localFile.toString();
-                            //ImageData post = new ImageData(mUid, date, fileName[0], name, count );
+                            fileName[0] = localFile.toString();
                             ImageData post = new ImageData(mUid, date, fileName[0], name, count );
                             gridList.add(post);
                             mAdapter.setImageDataArrayList(gridList);
@@ -200,15 +139,14 @@ public class ReceiveFragment extends Fragment {
                             // Handle any errors
                             Log.d("aaaa","failure");
                             /*allow read, write: if request.auth != null;*/
-/*                        }
+                        }
                     });
                 } catch( IOException e ) {
                 }
                 // /assets/image/以下に画像を入れています
                 // それのパスを取り出す method
                 getImagePath();
-    */        }
-
+            }
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 //ここでcountの変更を反映させる
@@ -227,38 +165,15 @@ public class ReceiveFragment extends Fragment {
 
 
         //dialogの表示
-        MainActivity.variable = "ログインに成功しました";
+        MainActivity.variable = "WatchFragmentにログインしました";
         activity.AlertDialog();
 
         //activity.notKeyboard();
 
-
-
         //mEventListenerの呼び出し
-        //MainActivity.fileRef.addChildEventListener(mEventListener);
-        //fileRef.addChildEventListener(mEventListener);
-        fileNameRef.addChildEventListener(mEventListener);
+        fileRef.addChildEventListener(mEventListener);
 
-        // Buttonのクリックした時の処理を書きます
-        view.findViewById(R.id.searchButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cord = cordEdit.getText().toString();
-                MainActivity activity = (MainActivity)getActivity();
-                //activity.download();
-                activity.intentWatchFragment();
 
-                //assetsに画像を保存する
-                //assesフォルダに入っているaisha_3.jpgを表示させる
-                try {
-                    InputStream istream = getResources().getAssets().open("aisha_3.jpg");
-                    Bitmap bitmap = BitmapFactory.decodeStream(istream);
-                    //imageView.setImageBitmap(bitmap);//gridViewを使うはず
-                } catch (IOException e) {
-                    Log.d("Assets","Error");
-                }
-            }
-        });
     }
 
     private void getImagePath() {

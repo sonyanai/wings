@@ -7,12 +7,13 @@ import android.graphics.Bitmap;
  */
 
 public class ImageData {
+
+    //mFile以外いらない
+
     private String mUid;
     private String mDate;
     private String mFileName;
     private String mName;
-    //private Bitmap mImageView;
-    private byte[] mBitmapArray;
     private String mCount;
 
     public String getUid(){
@@ -30,14 +31,6 @@ public class ImageData {
     public String getmName(){
         return mName;
     }
-
-    /*public Bitmap getImageView(){
-        return mImageView;
-    }*/
-
-    /*public byte[] getImageBytes(){
-        return mBitmapArray;
-    }*/
     public String getCount(){
         return mCount;
     }
@@ -47,8 +40,6 @@ public class ImageData {
         mDate = date;
         mFileName = fileName;
         mName = name;
-        //mImageView = imageView;
-        //mBitmapArray = imageBytes;
         mCount = count;
     }
 

@@ -3,13 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
-    android:padding="3dp">
+    android:id="@+id/gridContainer">
 
-    <ImageView
-        android:id="@+id/imageview"
+    <GridView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitCenter" />
+        android:id="@+id/rankingGridView"
+        android:layout_gravity="center"
+        android:horizontalSpacing="5dp"
+        android:verticalSpacing="5dp"
+        android:numColumns="4"
+        android:stretchMode="columnWidth"/>
 
 </LinearLayout>
