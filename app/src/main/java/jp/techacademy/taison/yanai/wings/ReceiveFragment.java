@@ -47,9 +47,6 @@ public class ReceiveFragment extends Fragment {
     DatabaseReference fileTotalRef;
 
     DatabaseReference folderPathRef;
-    DatabaseReference folderNameRef;
-    DatabaseReference folderTotalRef;
-    DatabaseReference folderRef;
     StorageReference storageRef;
     //firebasestrageをstrageという名前で使いますよ.これで Cloud Storage が使えるようになる
     FirebaseStorage storage;
@@ -135,10 +132,6 @@ public class ReceiveFragment extends Fragment {
         //fileRef = dataBaseReference.child(Const.FilePATH).child(user.getUid()).child("dgf");
 
         folderPathRef = dataBaseReference.child(Const.FolderPATH);
-        //folderNameRef = folderPathRef.child(user.getUid());
-        //folderNameRef = folderPathRef.child("8fnHRfgoMgP5TIE7lnqjs8vTP6Q2");
-        //folderTotalRef = folderNameRef.child(SendFragment.folderName);
-        //folderRef = folderTotalRef;
 
 
 
