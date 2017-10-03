@@ -1,4 +1,6 @@
 package jp.techacademy.taison.yanai.wings;
+import android.app.Activity;
+import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -57,6 +59,161 @@ public class ReceiveFragment extends Fragment {
     public static String cord;
     private FirebaseAuth mAuth;
 
+    static final String TAG = "FragmentTest";
+
+    /***
+     * Activityに関連付けされた際に一度だけ呼び出される
+     */
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Log.d(TAG, "onAttach");
+    }
+
+    /***
+     * Fragmentの初期化処理を行う
+     */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate");
+    }
+
+    /***
+     * 親となるActivityの「onCreate」の終了を知らせる
+     */
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Log.d(TAG, "onActivityCreated");
+    }
+
+    /***
+     * Activityの「onStart」に基づき開始される
+     */
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart");
+/*
+        //realtimeDatabase
+        filePathRef = dataBaseReference.child(Const.FilePATH);
+        //fileNameRef = filePathRef.child(user.getUid());
+        fileNameRef = filePathRef.child("8fnHRfgoMgP5TIE7lnqjs8vTP6Q2");
+        //fileTotalRef = fileNameRef.child(SendFragment.folderName);
+        //fileTotalRef = fileNameRef.child("gg").child("-KulzLzkoES30F72Wr47");
+        fileTotalRef = fileNameRef.child("kjkjk");
+        fileRef = fileTotalRef;
+        //fileRef = dataBaseReference.child(Const.FilePATH).child(user.getUid()).child("dgf");
+*/
+        folderPathRef = dataBaseReference.child(Const.FolderPATH);
+
+
+
+        //firebaseStorage
+        storageRef = storage.getReference();
+
+        //FolderDataが入ってるやつ
+        folderList = new ArrayList<FolderData>();
+        mAdapter = new FolderListAdapter(this.getActivity(), R.layout.grid_folder);
+
+
+
+
+
+        //mEventListenerの設定と初期化
+        ChildEventListener mEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(final DataSnapshot dataSnapshot, String s) {
+                //try {
+                HashMap map = (HashMap) dataSnapshot.getValue();
+                final String mUid = (String) map.get("mUid");
+                final String date = (String) map.get("date");
+                final String name = (String) map.get("name");
+                final String count = (String) map.get("count");
+                final String cost = (String) map.get("cost");
+                final String folderName = (String) map.get("folderName");
+                final String imageString = (String) map.get("image");
+
+
+                FolderData post = new FolderData(mUid, date, name, count, cost, folderName, imageString );
+                folderList.add(post);
+                mAdapter.setFolderDataArrayList(folderList);
+                gridView.setAdapter(mAdapter);
+                mAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                //ここでcountの変更を反映させる
+            }
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            }
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        };
+
+        folderPathRef.addChildEventListener(mEventListener);
+    }
+
+    /***
+     * Activityの「onResume」に基づき開始される
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume");
+    }
+
+    /***
+     * Activityが「onPause」になった場合や、Fragmentが変更更新されて操作を受け付けなくなった場合に呼び出される
+     */
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause");
+    }
+
+    /***
+     * フォアグラウンドでなくなった場合に呼び出される
+     */
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop");
+    }
+
+    /***
+     * Fragmentの内部のViewリソースの整理を行う
+     */
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.d(TAG, "onDestroyView");
+    }
+
+    /***
+     * Fragmentが破棄される時、最後に呼び出される
+     */
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy");
+    }
+
+    /***
+     * Activityの関連付けから外された時に呼び出される
+     */
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.d(TAG, "onDetach");
+    }
 
     //Fragmentで表示するViewを作成するメソッド
     @Override
@@ -121,67 +278,7 @@ public class ReceiveFragment extends Fragment {
 
 
 
-        //realtimeDatabase
-        filePathRef = dataBaseReference.child(Const.FilePATH);
-        //fileNameRef = filePathRef.child(user.getUid());
-        fileNameRef = filePathRef.child("8fnHRfgoMgP5TIE7lnqjs8vTP6Q2");
-        //fileTotalRef = fileNameRef.child(SendFragment.folderName);
-        //fileTotalRef = fileNameRef.child("gg").child("-KulzLzkoES30F72Wr47");
-        fileTotalRef = fileNameRef.child("kjkjk");
-        fileRef = fileTotalRef;
-        //fileRef = dataBaseReference.child(Const.FilePATH).child(user.getUid()).child("dgf");
 
-        folderPathRef = dataBaseReference.child(Const.FolderPATH);
-
-
-
-        //firebaseStorage
-        storageRef = storage.getReference();
-
-        //FolderDataが入ってるやつ
-        folderList = new ArrayList<FolderData>();
-        mAdapter = new FolderListAdapter(this.getActivity(), R.layout.grid_folder);
-
-
-
-
-
-        //mEventListenerの設定と初期化
-        ChildEventListener mEventListener = new ChildEventListener() {
-            @Override
-            public void onChildAdded(final DataSnapshot dataSnapshot, String s) {
-                //try {
-                    HashMap map = (HashMap) dataSnapshot.getValue();
-                    final String mUid = (String) map.get("mUid");
-                    final String date = (String) map.get("date");
-                    final String name = (String) map.get("name");
-                    final String count = (String) map.get("count");
-                    final String cost = (String) map.get("cost");
-                    final String folderName = (String) map.get("folderName");
-                    final String imageString = (String) map.get("image");
-
-
-                FolderData post = new FolderData(mUid, date, name, count, cost, folderName, imageString );
-                folderList.add(post);
-                mAdapter.setFolderDataArrayList(folderList);
-                gridView.setAdapter(mAdapter);
-                mAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                //ここでcountの変更を反映させる
-            }
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-            }
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        };
 
 
 
@@ -196,7 +293,7 @@ public class ReceiveFragment extends Fragment {
         //mEventListenerの呼び出し
         //fileRef.addChildEventListener(mEventListener);
         //fileNameRef.addChildEventListener(mEventListener);
-        folderPathRef.addChildEventListener(mEventListener);
+        //folderPathRef.addChildEventListener(mEventListener);
 
         // Buttonのクリックした時の処理を書きます
         view.findViewById(R.id.searchButton).setOnClickListener(new View.OnClickListener() {
@@ -254,5 +351,3 @@ public class ReceiveFragment extends Fragment {
         }
     }
 }
-
-
