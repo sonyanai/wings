@@ -75,6 +75,10 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference fileNameRef;
     DatabaseReference fileTotalRef;
     DatabaseReference fileRef;
+    DatabaseReference folderPathRef;
+    DatabaseReference folderNameRef;
+    DatabaseReference folderTotalRef;
+    DatabaseReference folderRef;
     FirebaseUser user;
     //firebasestrageをstrageという名前で使いますよ.これで Cloud Storage が使えるようになる
     FirebaseStorage storage;
@@ -350,6 +354,10 @@ public class MainActivity extends AppCompatActivity {
             //fileTotalRef = fileNameRef.child("gg").child("-KulzLzkoES30F72Wr47");
             fileTotalRef = fileNameRef.child(SendFragment.folderName);
             fileRef = fileTotalRef;
+            folderPathRef = dataBaseReference.child(Const.FolderPATH);
+            folderNameRef = folderPathRef.child(user.getUid());
+            folderTotalRef = folderNameRef.child(SendFragment.folderName);
+            folderRef = folderTotalRef;
 
 
             //realtimeDatabaseに送るよー
@@ -367,7 +375,7 @@ public class MainActivity extends AppCompatActivity {
             //名前
             // Preferenceから名前を取る
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-            String name = sp.getString(Const.NameKEY, "");
+            String name = sp.getString(Const.NameKEY, "son");
 
             //価格の取得
             String cost = SendFragment.cost;
@@ -394,7 +402,7 @@ public class MainActivity extends AppCompatActivity {
             data.put("folderName", folderName);
             data.put("image", bitmapString);
 
-            fileRef.push().setValue(data);
+            folderPathRef.push().setValue(data);
 
 
             for(Uri mUri : mFileArrayList){

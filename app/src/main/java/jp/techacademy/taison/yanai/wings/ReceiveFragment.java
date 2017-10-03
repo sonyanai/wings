@@ -42,9 +42,14 @@ public class ReceiveFragment extends Fragment {
     private FolderListAdapter mAdapter;
     DatabaseReference dataBaseReference;
     DatabaseReference filePathRef;
-    DatabaseReference fileRef;
     DatabaseReference fileNameRef;
+    DatabaseReference fileRef;
     DatabaseReference fileTotalRef;
+
+    DatabaseReference folderPathRef;
+    DatabaseReference folderNameRef;
+    DatabaseReference folderTotalRef;
+    DatabaseReference folderRef;
     StorageReference storageRef;
     //firebasestrageをstrageという名前で使いますよ.これで Cloud Storage が使えるようになる
     FirebaseStorage storage;
@@ -54,6 +59,7 @@ public class ReceiveFragment extends Fragment {
     EditText cordEdit;
     public static String cord;
     private FirebaseAuth mAuth;
+
 
     //Fragmentで表示するViewを作成するメソッド
     @Override
@@ -128,12 +134,20 @@ public class ReceiveFragment extends Fragment {
         fileRef = fileTotalRef;
         //fileRef = dataBaseReference.child(Const.FilePATH).child(user.getUid()).child("dgf");
 
+        folderPathRef = dataBaseReference.child(Const.FolderPATH);
+        //folderNameRef = folderPathRef.child(user.getUid());
+        //folderNameRef = folderPathRef.child("8fnHRfgoMgP5TIE7lnqjs8vTP6Q2");
+        //folderTotalRef = folderNameRef.child(SendFragment.folderName);
+        //folderRef = folderTotalRef;
+
+
+
         //firebaseStorage
         storageRef = storage.getReference();
 
         //FolderDataが入ってるやつ
         folderList = new ArrayList<FolderData>();
-        mAdapter = new FolderListAdapter(this.getActivity(), R.layout.grid_items);
+        mAdapter = new FolderListAdapter(this.getActivity(), R.layout.grid_folder);
 
 
 
@@ -152,14 +166,9 @@ public class ReceiveFragment extends Fragment {
                     final String cost = (String) map.get("cost");
                     final String folderName = (String) map.get("folderName");
                     final String imageString = (String) map.get("image");
-                    byte[] bytes;
-                    if (imageString != null) {
-                        bytes = Base64.decode(imageString, Base64.DEFAULT);
-                    } else {
-                        bytes = new byte[0];
-                    }
 
-                FolderData post = new FolderData(mUid, date, name, count, cost, folderName, bytes );
+
+                FolderData post = new FolderData(mUid, date, name, count, cost, folderName, imageString );
                 folderList.add(post);
                 mAdapter.setFolderDataArrayList(folderList);
                 gridView.setAdapter(mAdapter);
@@ -192,9 +201,9 @@ public class ReceiveFragment extends Fragment {
 
 
         //mEventListenerの呼び出し
-        //MainActivity.fileRef.addChildEventListener(mEventListener);
         //fileRef.addChildEventListener(mEventListener);
-        fileNameRef.addChildEventListener(mEventListener);
+        //fileNameRef.addChildEventListener(mEventListener);
+        folderPathRef.addChildEventListener(mEventListener);
 
         // Buttonのクリックした時の処理を書きます
         view.findViewById(R.id.searchButton).setOnClickListener(new View.OnClickListener() {

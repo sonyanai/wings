@@ -15,7 +15,7 @@ public class FolderData {
     private String mCount;
     private String mCost;
     private String mFolderName;
-    private byte[] mBitmapArray;
+    private String mImage;
 
 
         public String getUid(){
@@ -42,17 +42,17 @@ public class FolderData {
             return mFolderName;
         }
 
-        public byte[] getImageBytes(){
-            return mBitmapArray;
+        public String getImageBytes(){
+            return mImage;
         }
 
-        public FolderData(String uid, String date, String name, String count, String cost, String folderName, byte[] bytes ) {
+        public FolderData(String uid, String date, String name, String count, String cost, String folderName, String image ) {
             mUid = uid;
             mDate = date;
             mName = name;
             mCount = count;
             mCost = cost;
             mFolderName = folderName;
-            mBitmapArray = bytes.clone();
+            mImage = image;
         }
 }

@@ -7,6 +7,8 @@ package jp.techacademy.taison.yanai.wings;
 public class Const {
     // Firebaseにファイル名を保存するパス
     public static final String FilePATH = "files";
+
+    public static final String FolderPATH = "folders";
     // Firebaseにユーザの表示名を保存するパス
     public static final String UsersPATH = "users";
 

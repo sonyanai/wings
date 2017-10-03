@@ -1,6 +1,9 @@
 package jp.techacademy.taison.yanai.wings;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +46,7 @@ public class FolderListAdapter extends BaseAdapter {
         //String mFilepath = folderList.get(position).getFileName();
         String mCount = folderList.get(position).getCount();
         String mCost = folderList.get(position).getCost();
+        String mImage = folderList.get(position).getImageBytes();
 
         FolderViewHolder holder;
         if (convertView == null) {
@@ -59,8 +63,13 @@ public class FolderListAdapter extends BaseAdapter {
             holder = (FolderViewHolder) convertView.getTag();
         }
 
-        ///Bitmap bmp = BitmapFactory.decodeFile(mFilepath);
-        //holder.imageView.setImageBitmap(bmp);
+        byte[] bytes = Base64.decode(mImage,Base64.DEFAULT);
+        if(bytes.length != 0){
+            Bitmap image = BitmapFactory.decodeByteArray(bytes,0,bytes.length).copy(Bitmap.Config.ARGB_8888,true);
+            holder.imageView.setImageBitmap(image);
+        }
+
+
         //costととcountをholderにセット
         if(mCount!=null){
             holder.CountTextView.setText(mCount);

@@ -99,11 +99,11 @@ public class WatchFragment extends Fragment {
             public void onChildAdded(final DataSnapshot dataSnapshot, String s) {
                 try {
                     HashMap map = (HashMap) dataSnapshot.getValue();
-                    final String mUid = (String) map.get("mUid");
-                    final String date = (String) map.get("date");
+                    //final String mUid = (String) map.get("mUid");
+                    //final String date = (String) map.get("date");
                     final String[] fileName = {(String) map.get("fileName")};
-                    final String name = (String) map.get("name");
-                    final String count = (String) map.get("count");
+                    //final String name = (String) map.get("name");
+                    //final String count = (String) map.get("count");
 
                     //2017.9.12 0:11を入力してok押すと2017.9.12 0:11フォルダ内の203102214.jpgが取れる
                     //203102214.jpgを変数にするために先に保持しておきたい
@@ -122,7 +122,8 @@ public class WatchFragment extends Fragment {
                             //count += 1;
                             //fileRef.changeEventListener(mEventListener);
                             fileName[0] = localFile.toString();
-                            ImageData post = new ImageData(mUid, date, fileName[0], name, count );
+                            //ImageData post = new ImageData(mUid, date, fileName[0], name, count );
+                            ImageData post = new ImageData(fileName[0]);
                             gridList.add(post);
                             mAdapter.setImageDataArrayList(gridList);
                             gridView.setAdapter(mAdapter);
@@ -156,6 +157,10 @@ public class WatchFragment extends Fragment {
             public void onCancelled(DatabaseError databaseError) {
             }
         };
+
+
+
+
 
 
 
