@@ -111,7 +111,7 @@ public class ReceiveFragment extends Fragment {
 
 
         //firebaseStorage
-        storageRef = storage.getReference();
+        //storageRef = storage.getReference();
 
         //FolderDataが入ってるやつ
         folderList = new ArrayList<FolderData>();
@@ -159,6 +159,7 @@ public class ReceiveFragment extends Fragment {
         };
 
         folderPathRef.addChildEventListener(mEventListener);
+
     }
 
     /***
