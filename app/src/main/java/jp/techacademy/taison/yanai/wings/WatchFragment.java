@@ -134,7 +134,6 @@ public class WatchFragment extends Fragment {
                         public void onFailure(@NonNull Exception exception) {
                             // Handle any errors
                             Log.d("aaaa","failure");
-                            /*allow read, write: if request.auth != null;*/
                         }
                     });
                 } catch( IOException e ) {

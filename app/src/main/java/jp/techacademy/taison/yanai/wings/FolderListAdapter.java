@@ -42,8 +42,6 @@ public class FolderListAdapter extends BaseAdapter {
         //ファイル名->画像にする！
 
 
-
-        //String mFilepath = folderList.get(position).getFolderName();
         String mCount = folderList.get(position).getCount();
         String mCost = folderList.get(position).getCost();
         String mImage = folderList.get(position).getImageBytes();

@@ -38,7 +38,6 @@ import java.util.HashMap;
 public class ReceiveFragment extends Fragment {
     //receiveFragmentを開いたときに出てくるgridViewのリスト
     private ArrayList<FolderData> folderList = new ArrayList<FolderData>();  //FolderDataList
-    //private ArrayList<String> list = new ArrayList<String>();   //fileNameList
     private FolderListAdapter mAdapter;
     DatabaseReference dataBaseReference;
 
@@ -51,7 +50,6 @@ public class ReceiveFragment extends Fragment {
     EditText cordEdit;
     public static String cord;
     private FirebaseAuth mAuth;
-    WatchFragment fragmentWatch;
 
     static final String TAG = "FragmentTest";
 
