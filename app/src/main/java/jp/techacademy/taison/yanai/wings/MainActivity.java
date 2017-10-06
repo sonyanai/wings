@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     //メンバ変数として定義
     public ReceiveFragment fragmentReceive;
     public SendFragment fragmentSend;
-    public RealmFragment fragmentRealm;
+    public ReceivedFragment fragmentReceived;
     public ProfileFragment fragmentProfile;
     public WatchFragment fragmentWatch;
     public static String variable;
@@ -126,8 +126,8 @@ public class MainActivity extends AppCompatActivity {
                     return true;
 
                 case R.id.item_realm:
-                    fragmentRealm = new RealmFragment();
-                    transaction.replace(R.id.container, fragmentRealm);
+                    fragmentReceived = new ReceivedFragment();
+                    transaction.replace(R.id.container, fragmentReceived);
                     transaction.commit();
                     return true;
 
