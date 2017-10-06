@@ -403,6 +403,7 @@ public class MainActivity extends AppCompatActivity {
             for(Uri mUri : mFileArrayList){
 
                 //firebaseStorageのimgRefに動画や画像のUriを入れる
+
                 imgRef = storageRef.child(user.getUid()).child(SendFragment.folderName).child(mUri.getLastPathSegment()+ ".jpg");
                 UploadTask uploadTask = imgRef.putFile(mUri);
 

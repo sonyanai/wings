@@ -36,15 +36,12 @@ public class SendFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
 
         View v = inflater.inflate(R.layout.fragment_send,container,false);
-        MainActivity activity = (MainActivity)getActivity();
 
         folderNameEditText = (EditText)v.findViewById(R.id.folderName_EditText);
         costEditText = (EditText)v.findViewById(R.id.cost_EditText);
         folderImageView = (ImageView)v.findViewById(R.id.folderImageView);
         selectButton = (Button)v.findViewById(R.id.selectButton);
         sendButton = (Button)v.findViewById(R.id.sendButton);
-
-
 
         return v;
     }
@@ -90,8 +87,15 @@ public class SendFragment extends Fragment {
             public void onClick(View v) {
                 folderName = folderNameEditText.getText().toString();
                 cost = costEditText.getText().toString();
-                MainActivity activity = (MainActivity)getActivity();
-                activity.onSend();
+                //if(folderName != null && cost != null) {
+                    MainActivity activity = (MainActivity)getActivity();
+                    activity.onSend();
+                /*}else{
+                    MainActivity activity = (MainActivity)getActivity();
+                    MainActivity.variable = "input cost and password";
+                    activity.AlertDialog();
+                }*/
+
             }
         });
     }
