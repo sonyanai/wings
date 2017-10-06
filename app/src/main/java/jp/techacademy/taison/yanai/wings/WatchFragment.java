@@ -31,6 +31,7 @@ import java.util.HashMap;
  */
 //Fraggmentクラスを継承する
 public class WatchFragment extends Fragment {
+    public static final String TAG = "WatchFragment";
     //receiveFragmentを開いたときに出てくるgridViewのリスト
     private ArrayList<ImageData> gridList = new ArrayList<ImageData>();  //ImageDataList
     //private ArrayList<String> list = new ArrayList<String>();   //fileNameList
@@ -46,6 +47,8 @@ public class WatchFragment extends Fragment {
     FirebaseUser user;
     GridView gridView;
     public static String cord;
+    String intentUid;
+    String intentFolderName;
 
     //Fragmentで表示するViewを作成するメソッド
     @Override
@@ -60,6 +63,12 @@ public class WatchFragment extends Fragment {
     //Viewが生成し終わった時に呼ばれるメソッド
     public void onViewCreated(View view,Bundle savedInstanceState){
         super.onViewCreated(view,savedInstanceState);
+
+        Bundle bundle = getArguments();
+        intentUid = bundle.getString("mUid");
+        intentFolderName = bundle.getString("folderName");
+
+
         //firebaseを使えるようにする
         dataBaseReference = FirebaseDatabase.getInstance().getReference();
         storage = FirebaseStorage.getInstance();
@@ -75,11 +84,14 @@ public class WatchFragment extends Fragment {
         //realtimeDatabase
         filePathRef = dataBaseReference.child(Const.FilePATH);
         //fileNameRef = filePathRef.child(user.getUid());
-        fileNameRef = filePathRef.child("8fnHRfgoMgP5TIE7lnqjs8vTP6Q2");
+/*        fileNameRef = filePathRef.child("8fnHRfgoMgP5TIE7lnqjs8vTP6Q2");
         //fileTotalRef = fileNameRef.child(SendFragment.folderName);
         //fileTotalRef = fileNameRef.child("gg").child("-KulzLzkoES30F72Wr47");
         fileTotalRef = fileNameRef.child("kjkjk");
+   */     fileNameRef = filePathRef.child(intentUid);
+        fileTotalRef = fileNameRef.child(intentFolderName);
         fileRef = fileTotalRef;
+
         //fileRef = dataBaseReference.child(Const.FilePATH).child(user.getUid()).child("dgf");
 
         //firebaseStorage
@@ -110,8 +122,8 @@ public class WatchFragment extends Fragment {
                     //user.getUid()はアップロードした人のやつ
                     final File localFile = File.createTempFile("image","jpg");
                     //localFile.toURI();でlocalFileのuriを取得できる
-                    storageRef.child("8fnHRfgoMgP5TIE7lnqjs8vTP6Q2").child("kjkjk").child(fileName[0]).getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                        //storageRef.child(user.getUid()).child("kjkjk").child("203102214.jpg").getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    //storageRef.child("8fnHRfgoMgP5TIE7lnqjs8vTP6Q2").child("kjkjk").child(fileName[0]).getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                        storageRef.child(intentUid).child(intentFolderName).child(fileName[0]).getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                             // Local temp file has been created

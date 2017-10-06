@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     public SendFragment fragmentSend;
     public RealmFragment fragmentRealm;
     public ProfileFragment fragmentProfile;
+    public WatchFragment fragmentWatch;
     public ImageView imgView;
     public static String variable;
     DatabaseReference dataBaseReference;
@@ -155,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         //FirebaseCrash.report(new Exception("My first Android non-fatal error"));
 
 
@@ -175,32 +177,6 @@ public class MainActivity extends AppCompatActivity {
         variable = "a";
 
 
-
-
-
-
-        //Fragmentで最初の画面の設定をする
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        // Fragmentを作成します
-        ReceiveFragment fragmentReceive = new ReceiveFragment();
-        // コードからFragmentを追加
-        // Fragmentの追加や削除といった変更を行う際は、Transactionを利用します
-        // 新しく追加を行うのでaddを使用します
-        // メソッドの1つ目の引数は対象のViewGroupのID、2つ目の引数は追加するfragment
-        transaction.add(R.id.container, fragmentReceive);
-        // 最後にcommitを使用することで変更を反映します
-        transaction.commit();
-
-
-        //BottomNavigationViewの定義して設置する
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation_view);
-        //リスナーのセット
-        bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         if(user == null){
             //FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -226,6 +202,39 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
         }
+
+
+
+
+
+
+        //Fragmentで最初の画面の設定をする
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        // Fragmentを作成します
+        ReceiveFragment fragmentReceive = new ReceiveFragment();
+        // コードからFragmentを追加
+        // Fragmentの追加や削除といった変更を行う際は、Transactionを利用します
+        // 新しく追加を行うのでaddを使用します
+        // メソッドの1つ目の引数は対象のViewGroupのID、2つ目の引数は追加するfragment
+        transaction.add(R.id.container, fragmentReceive);
+        // 最後にcommitを使用することで変更を反映します
+        transaction.commit();
+
+
+        //BottomNavigationViewの定義して設置する
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation_view);
+        //リスナーのセット
+        bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+
+
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
 
     }
 
@@ -521,12 +530,12 @@ public class MainActivity extends AppCompatActivity {
     public void intentWatchFragment(){
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         // Fragmentを作成・初期化します
-        fragmentReceive = new ReceiveFragment();
+        fragmentWatch = new WatchFragment();
         // コードからFragmentを追加
         // Fragmentの追加や削除といった変更を行う際は、Transactionを利用します
         // 新しく追加を行うのでaddを使用します
         // メソッドの1つ目の引数は対象のViewGroupのID、2つ目の引数は追加するfragment
-        transaction.replace(R.id.container, fragmentReceive);
+        transaction.replace(R.id.container, fragmentWatch);
         // 最後にcommitを使用することで変更を反映します
         transaction.commit();
     }

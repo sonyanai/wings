@@ -1,17 +1,18 @@
 package jp.techacademy.taison.yanai.wings;
-import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.util.Base64;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -58,6 +59,7 @@ public class ReceiveFragment extends Fragment {
     EditText cordEdit;
     public static String cord;
     private FirebaseAuth mAuth;
+    WatchFragment fragmentWatch;
 
     static final String TAG = "FragmentTest";
 
@@ -106,7 +108,7 @@ public class ReceiveFragment extends Fragment {
         fileRef = fileTotalRef;
         //fileRef = dataBaseReference.child(Const.FilePATH).child(user.getUid()).child("dgf");
 */
- /*       folderPathRef = dataBaseReference.child(Const.FolderPATH);
+        folderPathRef = dataBaseReference.child(Const.FolderPATH);
 
 
 
@@ -158,7 +160,7 @@ public class ReceiveFragment extends Fragment {
             }
         };
 
-        folderPathRef.addChildEventListener(mEventListener);*/
+        folderPathRef.addChildEventListener(mEventListener);
 
     }
 
@@ -276,28 +278,6 @@ public class ReceiveFragment extends Fragment {
 
 
 
-        folderPathRef = dataBaseReference.child(Const.FolderPATH);
-
-
-
-        //firebaseStorage
-        //storageRef = storage.getReference();
-
-        //FolderDataが入ってるやつ
-        folderList = new ArrayList<FolderData>();
-        mAdapter = new FolderListAdapter(this.getActivity(), R.layout.grid_folder);
-
-
-
-
-
-
-
-        //folderPathRef.addChildEventListener(mEventListener);
-
-
-
-
 
 
 
@@ -312,56 +292,32 @@ public class ReceiveFragment extends Fragment {
         //activity.notKeyboard();
 
 
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Bundle bundle = new Bundle();
+                bundle.putString("mUid", folderList.get(position).getUid());
+                bundle.putString("folderName", folderList.get(position).getFolderName());
+                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                WatchFragment fragmentWatch = new WatchFragment();
+                fragmentWatch.setArguments(bundle);
 
-        //mEventListenerの呼び出し
-        //fileRef.addChildEventListener(mEventListener);
-        //fileNameRef.addChildEventListener(mEventListener);
-        //folderPathRef.addChildEventListener(mEventListener);
+                getFragmentManager().beginTransaction()
+                        .add(R.id.container,fragmentWatch,WatchFragment.TAG)
+                        .commit();
+
+
+                //transaction.replace(R.id.container, fragmentWatch);
+                //transaction.commit();
+
+            }
+        });
+
+
 
         // Buttonのクリックした時の処理を書きます
         view.findViewById(R.id.searchButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                //mEventListenerの設定と初期化
-                ChildEventListener mEventListener = new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(final DataSnapshot dataSnapshot, String s) {
-                        //try {
-                        HashMap map = (HashMap) dataSnapshot.getValue();
-                        final String mUid = (String) map.get("mUid");
-                        final String date = (String) map.get("date");
-                        final String name = (String) map.get("name");
-                        final String count = (String) map.get("count");
-                        final String cost = (String) map.get("cost");
-                        final String folderName = (String) map.get("folderName");
-                        final String imageString = (String) map.get("image");
-
-
-                        FolderData post = new FolderData(mUid, date, name, count, cost, folderName, imageString );
-                        folderList.add(post);
-                        mAdapter.setFolderDataArrayList(folderList);
-                        gridView.setAdapter(mAdapter);
-                        mAdapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                        //ここでcountの変更を反映させる
-                    }
-                    @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {
-                    }
-                    @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                    }
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                };
-
-                folderPathRef.addChildEventListener(mEventListener);
-                /*
                 cord = cordEdit.getText().toString();
                 MainActivity activity = (MainActivity)getActivity();
                 //activity.download();
@@ -375,7 +331,7 @@ public class ReceiveFragment extends Fragment {
                     //imageView.setImageBitmap(bitmap);//gridViewを使うはず
                 } catch (IOException e) {
                     Log.d("Assets","Error");
-                }*/
+                }
             }
         });
     }

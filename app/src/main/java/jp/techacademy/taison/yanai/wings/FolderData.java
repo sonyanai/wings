@@ -38,7 +38,7 @@ public class FolderData {
             return mCost;
         }
 
-        public String getFileName(){
+        public String getFolderName(){
             return mFolderName;
         }
 
