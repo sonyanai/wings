@@ -297,12 +297,12 @@ public class ReceiveFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putString("mUid", folderList.get(position).getUid());
                 bundle.putString("folderName", folderList.get(position).getFolderName());
-                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                //FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                 WatchFragment fragmentWatch = new WatchFragment();
                 fragmentWatch.setArguments(bundle);
 
                 getFragmentManager().beginTransaction()
-                        .add(R.id.container,fragmentWatch,WatchFragment.TAG)
+                        .replace(R.id.container,fragmentWatch,WatchFragment.TAG)
                         .commit();
 
 
