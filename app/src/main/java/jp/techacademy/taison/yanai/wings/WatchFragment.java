@@ -34,7 +34,6 @@ public class WatchFragment extends Fragment {
     public static final String TAG = "WatchFragment";
     //receiveFragmentを開いたときに出てくるgridViewのリスト
     private ArrayList<ImageData> gridList = new ArrayList<ImageData>();  //ImageDataList
-    //private ArrayList<String> list = new ArrayList<String>();   //fileNameList
     private GridListAdapter mAdapter;
     DatabaseReference dataBaseReference;
     DatabaseReference filePathRef;
@@ -83,16 +82,10 @@ public class WatchFragment extends Fragment {
 
         //realtimeDatabase
         filePathRef = dataBaseReference.child(Const.FilePATH);
-        //fileNameRef = filePathRef.child(user.getUid());
-/*        fileNameRef = filePathRef.child("8fnHRfgoMgP5TIE7lnqjs8vTP6Q2");
-        //fileTotalRef = fileNameRef.child(SendFragment.folderName);
-        //fileTotalRef = fileNameRef.child("gg").child("-KulzLzkoES30F72Wr47");
-        fileTotalRef = fileNameRef.child("kjkjk");
-   */     fileNameRef = filePathRef.child(intentUid);
+        fileNameRef = filePathRef.child(intentUid);
         fileTotalRef = fileNameRef.child(intentFolderName);
         fileRef = fileTotalRef;
 
-        //fileRef = dataBaseReference.child(Const.FilePATH).child(user.getUid()).child("dgf");
 
         //firebaseStorage
         storageRef = storage.getReference();
@@ -111,18 +104,13 @@ public class WatchFragment extends Fragment {
             public void onChildAdded(final DataSnapshot dataSnapshot, String s) {
                 try {
                     HashMap map = (HashMap) dataSnapshot.getValue();
-                    //final String mUid = (String) map.get("mUid");
-                    //final String date = (String) map.get("date");
                     final String[] fileName = {(String) map.get("fileName")};
-                    //final String name = (String) map.get("name");
-                    //final String count = (String) map.get("count");
 
                     //2017.9.12 0:11を入力してok押すと2017.9.12 0:11フォルダ内の203102214.jpgが取れる
                     //203102214.jpgを変数にするために先に保持しておきたい
                     //user.getUid()はアップロードした人のやつ
                     final File localFile = File.createTempFile("image","jpg");
                     //localFile.toURI();でlocalFileのuriを取得できる
-                    //storageRef.child("8fnHRfgoMgP5TIE7lnqjs8vTP6Q2").child("kjkjk").child(fileName[0]).getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                         storageRef.child(intentUid).child(intentFolderName).child(fileName[0]).getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {

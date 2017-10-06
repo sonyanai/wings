@@ -9,17 +9,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 //Fragmentのimportはこれ！！！
 import android.support.v7.app.AlertDialog;
@@ -28,10 +25,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -40,10 +34,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -69,10 +61,8 @@ public class MainActivity extends AppCompatActivity {
     public RealmFragment fragmentRealm;
     public ProfileFragment fragmentProfile;
     public WatchFragment fragmentWatch;
-    public ImageView imgView;
     public static String variable;
     DatabaseReference dataBaseReference;
-    //public static DatabaseReference fileRef;
     DatabaseReference filePathRef;
     DatabaseReference fileNameRef;
     DatabaseReference fileTotalRef;
@@ -155,9 +145,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-        //FirebaseCrash.report(new Exception("My first Android non-fatal error"));
 
 
         //firebaseStorageの設定
@@ -321,15 +308,11 @@ public class MainActivity extends AppCompatActivity {
                         } catch (Exception e) {
                             return;
                         }
-
                         // BitmapをImageViewに設定する
                         SendFragment.folderImageView.setImageBitmap(image);
 
-                        //mFileArrayList = new ArrayList<Uri>();
                         //uriをarraylistに追加
                         mFileArrayList.add(uri);
-                        //totalSize += fileSize;
-
 
                         InputStream in = getContentResolver().openInputStream(uri);
                         //Bitmap img = BitmapFactory.decodeStream(in);

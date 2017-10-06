@@ -1,13 +1,11 @@
 package jp.techacademy.taison.yanai.wings;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +26,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,13 +41,8 @@ public class ReceiveFragment extends Fragment {
     //private ArrayList<String> list = new ArrayList<String>();   //fileNameList
     private FolderListAdapter mAdapter;
     DatabaseReference dataBaseReference;
-    DatabaseReference filePathRef;
-    DatabaseReference fileNameRef;
-    DatabaseReference fileRef;
-    DatabaseReference fileTotalRef;
 
     DatabaseReference folderPathRef;
-    StorageReference storageRef;
     //firebasestrageをstrageという名前で使いますよ.これで Cloud Storage が使えるようになる
     FirebaseStorage storage;
     FirebaseUser user;
@@ -97,23 +89,11 @@ public class ReceiveFragment extends Fragment {
     public void onStart() {
         super.onStart();
         Log.d(TAG, "onStart");
-/*
-        //realtimeDatabase
-        filePathRef = dataBaseReference.child(Const.FilePATH);
-        //fileNameRef = filePathRef.child(user.getUid());
-        fileNameRef = filePathRef.child("8fnHRfgoMgP5TIE7lnqjs8vTP6Q2");
-        //fileTotalRef = fileNameRef.child(SendFragment.folderName);
-        //fileTotalRef = fileNameRef.child("gg").child("-KulzLzkoES30F72Wr47");
-        fileTotalRef = fileNameRef.child("kjkjk");
-        fileRef = fileTotalRef;
-        //fileRef = dataBaseReference.child(Const.FilePATH).child(user.getUid()).child("dgf");
-*/
+
+
         folderPathRef = dataBaseReference.child(Const.FolderPATH);
 
 
-
-        //firebaseStorage
-        //storageRef = storage.getReference();
 
         //FolderDataが入ってるやつ
         folderList = new ArrayList<FolderData>();
@@ -272,19 +252,6 @@ public class ReceiveFragment extends Fragment {
         }
 
 
-
-        //refの調整！;
-        //あと，送るところきちんと設定する;
-
-
-
-
-
-
-
-
-
-
         //dialogの表示
         MainActivity.variable = "ログインに成功しました";
         activity.AlertDialog();
@@ -292,22 +259,18 @@ public class ReceiveFragment extends Fragment {
         //activity.notKeyboard();
 
 
+        //gridVieを押したときの処理
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Bundle bundle = new Bundle();
                 bundle.putString("mUid", folderList.get(position).getUid());
                 bundle.putString("folderName", folderList.get(position).getFolderName());
-                //FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                 WatchFragment fragmentWatch = new WatchFragment();
                 fragmentWatch.setArguments(bundle);
 
                 getFragmentManager().beginTransaction()
                         .replace(R.id.container,fragmentWatch,WatchFragment.TAG)
                         .commit();
-
-
-                //transaction.replace(R.id.container, fragmentWatch);
-                //transaction.commit();
 
             }
         });
@@ -328,7 +291,6 @@ public class ReceiveFragment extends Fragment {
                 try {
                     InputStream istream = getResources().getAssets().open("aisha_3.jpg");
                     Bitmap bitmap = BitmapFactory.decodeStream(istream);
-                    //imageView.setImageBitmap(bitmap);//gridViewを使うはず
                 } catch (IOException e) {
                     Log.d("Assets","Error");
                 }
