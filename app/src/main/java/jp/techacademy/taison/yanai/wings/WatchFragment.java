@@ -118,6 +118,7 @@ public class WatchFragment extends Fragment {
 
                             //プログレスバー読み込み終わるまで，終わらせる処理も
 
+
                             Log.d("aaaaa","suc");
                             //count += 1;
                             //fileRef.changeEventListener(mEventListener);
