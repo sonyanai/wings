@@ -17,6 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:hint="search"
+            android:inputType="text"
             android:id="@+id/cordEdit"/>
 
         <Button
@@ -24,6 +25,8 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:text="ok"
             android:id="@+id/searchButton"/>
 

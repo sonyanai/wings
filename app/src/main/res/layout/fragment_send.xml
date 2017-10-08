@@ -16,17 +16,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/selectButton"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:text="select"/>
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/cost_EditText"
+        android:inputType="text"
         android:hint="cost"/>
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/folderName_EditText"
+        android:inputType="text"
         android:hint="password"/>
     <Button
         android:layout_width="wrap_content"
