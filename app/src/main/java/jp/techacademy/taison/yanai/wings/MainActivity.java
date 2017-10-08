@@ -338,113 +338,109 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void onSend(){
-        //storage = FirebaseStorage.getInstance();
-        //storageRef = storage.getReference();
+    public void onSend() {
+        //なんで？？？
+        if (mFileArrayList.size() != 0) {
+            //folderがnullの時は何もしない
+            if (SendFragment.folderName != null) {
+                //realtimeDatabaseの設定
+                filePathRef = dataBaseReference.child(Const.FilePATH);
+                fileNameRef = filePathRef.child(user.getUid());
+                fileTotalRef = fileNameRef.child(SendFragment.folderName);
+                fileRef = fileTotalRef;
+                folderPathRef = dataBaseReference.child(Const.FolderPATH);
+                folderNameRef = folderPathRef.child(user.getUid());
+                folderTotalRef = folderNameRef.child(SendFragment.folderName);
+                folderRef = folderTotalRef;
 
 
+                //realtimeDatabaseに送るよー
+                Map<String, String> data = new HashMap<String, String>();
 
-        //folderがnullの時は何もしない
-        if(SendFragment.folderName != null){
-            //realtimeDatabaseの設定
-            filePathRef = dataBaseReference.child(Const.FilePATH);
-            fileNameRef = filePathRef.child(user.getUid());
-            fileTotalRef = fileNameRef.child(SendFragment.folderName);
-            fileRef = fileTotalRef;
-            folderPathRef = dataBaseReference.child(Const.FolderPATH);
-            folderNameRef = folderPathRef.child(user.getUid());
-            folderTotalRef = folderNameRef.child(SendFragment.folderName);
-            folderRef = folderTotalRef;
+                //Uid
+                String mUid = user.getUid();
 
+                //送るデータ各種
+                //日時
+                String dateString = year + "/" + String.format("%02d", (month + 1)) + "/" + String.format("%02d", day);
+                String timeString = String.format("%02d", hour) + ":" + String.format("%02d", minute);
+                String date = dateString + timeString;
 
-            //realtimeDatabaseに送るよー
-            Map<String, String> data = new HashMap<String, String>();
+                //名前
+                // Preferenceから名前を取る
+                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+                String name = sp.getString(Const.NameKEY, "son");
 
-            //Uid
-            String mUid =  user.getUid();
+                //価格の取得
+                String cost = SendFragment.cost;
 
-            //送るデータ各種
-            //日時
-            String dateString = year + "/" + String.format("%02d",(month + 1)) + "/" + String.format("%02d", day);
-            String timeString = String.format("%02d", hour) + ":" + String.format("%02d", minute);
-            String date = dateString+timeString;
+                //フォルダ名の取得
+                String folderName = SendFragment.folderName;
 
-            //名前
-            // Preferenceから名前を取る
-            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-            String name = sp.getString(Const.NameKEY, "son");
-
-            //価格の取得
-            String cost = SendFragment.cost;
-
-            //フォルダ名の取得
-            String folderName = SendFragment.folderName;
-
-            //フォルダ画像の取得
-            BitmapDrawable drawable = (BitmapDrawable) SendFragment.folderImageView.getDrawable();
-            //画像を取り出しエンコードする
-            Bitmap bitmap = drawable.getBitmap();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos);
-            String bitmapString = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
+                //フォルダ画像の取得
+                BitmapDrawable drawable = (BitmapDrawable) SendFragment.folderImageView.getDrawable();
+                //画像を取り出しエンコードする
+                Bitmap bitmap = drawable.getBitmap();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos);
+                String bitmapString = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
 
 
+                data.put("mUid", mUid);
+                data.put("date", date);
+                data.put("name", name);
+                data.put("count", String.valueOf(count));
+                data.put("cost", cost);
+                data.put("folderName", folderName);
+                data.put("image", bitmapString);
+
+                folderPathRef.push().setValue(data);
 
 
-            data.put("mUid", mUid);
-            data.put("date", date);
-            data.put("name", name);
-            data.put("count", String.valueOf(count));
-            data.put("cost", cost);
-            data.put("folderName", folderName);
-            data.put("image", bitmapString);
+                for (Uri mUri : mFileArrayList) {
 
-            folderPathRef.push().setValue(data);
+                    //firebaseStorageのimgRefに動画や画像のUriを入れる
+
+                    imgRef = storageRef.child(user.getUid()).child(SendFragment.folderName).child(mUri.getLastPathSegment() + ".jpg");
+                    UploadTask uploadTask = imgRef.putFile(mUri);
 
 
-            for(Uri mUri : mFileArrayList){
+                    Map<String, String> fileNameData = new HashMap<String, String>();
 
-                //firebaseStorageのimgRefに動画や画像のUriを入れる
+                    //ファイル名を取得したい
+                    String aaa = mUri.getPath();
+                    String bbb = new File(aaa).getName();
+                    String fileName = bbb + ".jpg";
 
-                imgRef = storageRef.child(user.getUid()).child(SendFragment.folderName).child(mUri.getLastPathSegment()+ ".jpg");
-                UploadTask uploadTask = imgRef.putFile(mUri);
+                    fileNameData.put("fileName", fileName);
+                    fileRef.push().setValue(fileNameData);
 
-
-                Map<String, String> fileNameData = new HashMap<String, String>();
-
-                //ファイル名を取得したい
-                String aaa = mUri.getPath();
-                String bbb = new File(aaa).getName();
-                String fileName =bbb+".jpg";
-
-                fileNameData.put("fileName", fileName);
-                fileRef.push().setValue(fileNameData);
-
-
-                // Register observers to listen for when the download is done or if it fails
-                uploadTask.addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        variable = "送信に失敗しました";
-                        AlertDialog();
-                        // Handle unsuccessful uploads
-                    }
-                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                        // Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                        variable = "送信に成功しました";
-                        AlertDialog();
-                    }
-                });
+                    // Register observers to listen for when the download is done or if it fails
+                    uploadTask.addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            variable = "送信に失敗しました";
+                            AlertDialog();
+                            // Handle unsuccessful uploads
+                        }
+                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                            // Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                            variable = "送信に成功しました";
+                            AlertDialog();
+                        }
+                    });
+                }
+                //arraylistをクリアーさせる
+                mFileArrayList.clear();
             }
-
-
-            //arraylistをクリアーさせる
-            mFileArrayList.clear();
+        }else{
+            Log.d("ssss","yesaaaa");
+            variable = "select contents";
+            AlertDialog();
         }
-
     }
     public void intentLogin(){
         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);

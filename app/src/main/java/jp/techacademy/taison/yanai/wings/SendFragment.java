@@ -23,6 +23,7 @@ public class SendFragment extends Fragment {
 
     public static String folderName;
     public static String cost;
+
     EditText folderNameEditText;
     EditText costEditText;
     public static ImageView folderImageView;
@@ -51,8 +52,6 @@ public class SendFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        cost = null;
-        folderName = null;
 
 
         // Buttonのクリックした時の処理を書きます
@@ -86,21 +85,30 @@ public class SendFragment extends Fragment {
                 }
             }
         });
+
+        //画像の有無判断はMainActivityでやる
         view.findViewById(R.id.sendButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 folderName = folderNameEditText.getText().toString();
                 cost = costEditText.getText().toString();
+                int costRange = Integer.parseInt(cost);
+                MainActivity activity = (MainActivity)getActivity();
 
-
-                if(folderName != null && cost != null) {
-                    MainActivity activity = (MainActivity)getActivity();
-                    activity.onSend();
-                    Log.d("ssss","send");
+                if( folderName.length() == 8  && cost.length() != 0) {
+                    if(100 <= costRange && costRange <= 5000){
+                        activity.onSend();
+                        Log.d("ssss","yes");
+                    }else{
+                        MainActivity.variable = "100<cost<5000";
+                        activity.AlertDialog();
+                        Log.d("ssss","cost");
+                    }
                 }else{
-                    MainActivity activity = (MainActivity)getActivity();
-                    MainActivity.variable = "input cost and password";
+
+                    MainActivity.variable = "input cost and password is 8 characters";
                     activity.AlertDialog();
+                    Log.d("ssss","no");
                 }
 
             }
