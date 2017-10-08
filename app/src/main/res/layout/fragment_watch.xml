@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:id="@+id/gridContainer">
 
     <GridView
+
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/rankingGridView"
@@ -15,4 +16,10 @@
         android:numColumns="4"
         android:stretchMode="columnWidth"/>
 
-</LinearLayout>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/visivility_imageView"
+        android:scaleType="fitXY"/>
+
+</RelativeLayout>

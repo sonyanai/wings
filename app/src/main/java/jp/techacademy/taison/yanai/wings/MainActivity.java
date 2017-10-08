@@ -260,18 +260,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showChooser() {
+
         // ギャラリーから選択するIntent
         Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
         //何を選択できるようにするか
+        //galleryIntent.setType("*/*");
+        //↑
         galleryIntent.setType("image/*,video/*");
         //galleryIntent.addCategory(Intent.CATEGORY_OPENABLE);
         //複数選択可能
         galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         //選択した動画像を読み込む
         //galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+        //↑
         galleryIntent.setAction(Intent.ACTION_PICK);
         //galleryに飛ばして選択させる
         startActivityForResult(Intent.createChooser(galleryIntent,"画像/動画を選択"), CHOOSER_REQUEST_CODE);
+
     }
 
 
@@ -282,13 +287,7 @@ public class MainActivity extends AppCompatActivity {
             //選択されたのがnullでない場合
             if (data.getData() != null) {
 
-
-
                 //ここでサイズを取得したい
-
-
-
-
 
                 ClipData clipData = data.getClipData();
                 for (int i = 0; i < clipData.getItemCount(); i++){
@@ -308,8 +307,14 @@ public class MainActivity extends AppCompatActivity {
                         } catch (Exception e) {
                             return;
                         }
-                        // BitmapをImageViewに設定する
-                        SendFragment.folderImageView.setImageBitmap(image);
+
+
+                        //最初に選択したのをfolder画像にしたい
+                        if(i==0){
+                            // BitmapをImageViewに設定する
+                            SendFragment.folderImageView.setImageBitmap(image);
+                        }
+
 
                         //uriをarraylistに追加
                         mFileArrayList.add(uri);
@@ -343,10 +348,7 @@ public class MainActivity extends AppCompatActivity {
         if(SendFragment.folderName != null){
             //realtimeDatabaseの設定
             filePathRef = dataBaseReference.child(Const.FilePATH);
-            //fileNameRef = filePathRef.child(user.getUid());
             fileNameRef = filePathRef.child(user.getUid());
-            //fileTotalRef = fileNameRef.child(SendFragment.folderName);
-            //fileTotalRef = fileNameRef.child("gg").child("-KulzLzkoES30F72Wr47");
             fileTotalRef = fileNameRef.child(SendFragment.folderName);
             fileRef = fileTotalRef;
             folderPathRef = dataBaseReference.child(Const.FolderPATH);

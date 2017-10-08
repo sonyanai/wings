@@ -1,6 +1,5 @@
 package jp.techacademy.taison.yanai.wings;
 
-import android.graphics.Bitmap;
 
 /**
  * Created by taiso on 2017/09/12.
@@ -8,42 +7,20 @@ import android.graphics.Bitmap;
 
 public class ImageData {
 
-    //mFile以外いらない
-
-    //private String mUid;
-    //private String mDate;
     private String mFileName;
-    //private String mName;
-    //private String mCount;
+    private byte[] mBitmapArray;
 
-  /*  public String getUid(){
-        return mUid;
-    }
-
-    public String getDate(){
-        return mDate;
-    }*/
 
     public String getFileName(){
         return mFileName;
     }
 
- /*   public String getmName(){
-        return mName;
+    public byte[] getImageBytes() {
+        return mBitmapArray;
     }
-    public String getCount(){
-        return mCount;
-    }
-*/
-    //public ImageData(String uid, String date, String fileName, String name,String count ) {
-        //mUid = uid;
-       // mDate = date;
-        //mFileName = fileName;
-        //mName = name;
-        //mCount = count;
-    public ImageData( String fileName ) {
+
+    public ImageData( String fileName , byte[] bytes) {
         mFileName = fileName;
-
-}
-
+        mBitmapArray = bytes.clone();
+    }
 }

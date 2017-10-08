@@ -1,5 +1,7 @@
 package jp.techacademy.taison.yanai.wings;
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -7,7 +9,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -20,6 +25,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -45,6 +52,7 @@ public class WatchFragment extends Fragment {
     FirebaseStorage storage;
     FirebaseUser user;
     GridView gridView;
+    ImageView visivility;
     public static String cord;
     String intentUid;
     String intentFolderName;
@@ -57,11 +65,16 @@ public class WatchFragment extends Fragment {
         MainActivity activity = (MainActivity)getActivity();
         // GridViewのインスタンスを生成
         gridView = (GridView)v.findViewById(R.id.rankingGridView);
+        visivility = (ImageView)v.findViewById(R.id.visivility_imageView);
         return v;
     }
     //Viewが生成し終わった時に呼ばれるメソッド
     public void onViewCreated(View view,Bundle savedInstanceState){
         super.onViewCreated(view,savedInstanceState);
+
+
+        visivility.setImageAlpha(190);
+        visivility.setImageResource(R.drawable.mosaic);
 
         Bundle bundle = getArguments();
         intentUid = bundle.getString("mUid");
@@ -123,8 +136,11 @@ public class WatchFragment extends Fragment {
                             //count += 1;
                             //fileRef.changeEventListener(mEventListener);
                             fileName[0] = localFile.toString();
-                            //ImageData post = new ImageData(mUid, date, fileName[0], name, count );
-                            ImageData post = new ImageData(fileName[0]);
+                            Bitmap bmp = BitmapFactory.decodeFile(fileName[0]);
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                            byte[] bytes = baos.toByteArray();
+                            ImageData post = new ImageData(fileName[0],bytes);
                             gridList.add(post);
                             mAdapter.setImageDataArrayList(gridList);
                             gridView.setAdapter(mAdapter);
@@ -172,6 +188,26 @@ public class WatchFragment extends Fragment {
 
         //mEventListenerの呼び出し
         fileRef.addChildEventListener(mEventListener);
+
+
+
+        //gridVieを押したときの処理
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Bundle bundle = new Bundle();
+                bundle.putString("intentUid", intentUid);
+                bundle.putString("intentFolderName", intentFolderName);
+                bundle.putString("intentFileName", gridList.get(position).getFileName());
+                bundle.putByteArray("bytes", gridList.get(position).getImageBytes());
+                FilterFragment fragmentFilter = new FilterFragment();
+                fragmentFilter.setArguments(bundle);
+
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.container,fragmentFilter,FilterFragment.TAG)
+                        .commit();
+
+            }
+        });
 
 
     }
