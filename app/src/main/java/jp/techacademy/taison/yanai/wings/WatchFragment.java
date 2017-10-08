@@ -135,11 +135,17 @@ public class WatchFragment extends Fragment {
                             Log.d("aaaaa","suc");
                             //count += 1;
                             //fileRef.changeEventListener(mEventListener);
+
+                            //postの第一引数
                             fileName[0] = localFile.toString();
+
+                            //postの第二引数
+                            //fileNameをbyte[]に変換する
                             Bitmap bmp = BitmapFactory.decodeFile(fileName[0]);
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
                             bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                             byte[] bytes = baos.toByteArray();
+
                             ImageData post = new ImageData(fileName[0],bytes);
                             gridList.add(post);
                             mAdapter.setImageDataArrayList(gridList);
@@ -194,10 +200,9 @@ public class WatchFragment extends Fragment {
         //gridVieを押したときの処理
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+
                 Bundle bundle = new Bundle();
-                bundle.putString("intentUid", intentUid);
-                bundle.putString("intentFolderName", intentFolderName);
-                bundle.putString("intentFileName", gridList.get(position).getFileName());
                 bundle.putByteArray("bytes", gridList.get(position).getImageBytes());
                 FilterFragment fragmentFilter = new FilterFragment();
                 fragmentFilter.setArguments(bundle);

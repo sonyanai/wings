@@ -4,6 +4,7 @@ package jp.techacademy.taison.yanai.wings;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 //fragmentのimportはこれ！！！
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +51,9 @@ public class SendFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        cost = null;
+        folderName = null;
+
 
         // Buttonのクリックした時の処理を書きます
         view.findViewById(R.id.selectButton).setOnClickListener(new View.OnClickListener() {
@@ -87,14 +91,17 @@ public class SendFragment extends Fragment {
             public void onClick(View v) {
                 folderName = folderNameEditText.getText().toString();
                 cost = costEditText.getText().toString();
-                //if(folderName != null && cost != null) {
+
+
+                if(folderName != null && cost != null) {
                     MainActivity activity = (MainActivity)getActivity();
                     activity.onSend();
-                /*}else{
+                    Log.d("ssss","send");
+                }else{
                     MainActivity activity = (MainActivity)getActivity();
                     MainActivity.variable = "input cost and password";
                     activity.AlertDialog();
-                }*/
+                }
 
             }
         });
