@@ -111,6 +111,9 @@ public class SendFragment extends Fragment {
                     Log.d("ssss","no");
                 }
 
+                folderNameEditText.getEditableText().clear();
+                costEditText.getEditableText().clear();
+
             }
         });
     }
