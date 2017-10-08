@@ -9,12 +9,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentTransaction;
@@ -297,6 +299,16 @@ public class MainActivity extends AppCompatActivity {
 
                         uri = item.getUri();
 
+                        /*String abc = uri.getPath();
+                        int abclength = abc.length();
+                        Log.d("aaaaa","abc="+ abc + "サイズ=" + abclength);*/
+                        /*
+                        File abc = getPath(this,uri);
+                        int abclength = abc.length();
+                        Log.d("aaaaa","abc="+ abc + "サイズ=" + abclength);
+*/
+
+
                         // URIからBitmapを取得する
                         Bitmap image;
                         try {
@@ -519,5 +531,15 @@ public class MainActivity extends AppCompatActivity {
         transaction.replace(R.id.container, fragmentWatch);
         // 最後にcommitを使用することで変更を反映します
         transaction.commit();
+    }
+
+    public static String getPath(Context context, Uri uri) {
+        ContentResolver contentResolver = context.getContentResolver();
+        String[] columns = { MediaStore.Images.Media.DATA };
+        Cursor cursor = contentResolver.query(uri, columns, null, null, null);
+        cursor.moveToFirst();
+        String path = cursor.getString(0);
+        cursor.close();
+        return path;
     }
 }
