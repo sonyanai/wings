@@ -101,6 +101,7 @@ public class SendFragment extends Fragment {
                     cost = costEditText.getText().toString();
                     int costRange = Integer.parseInt(cost);
 
+                    //folderNameとcostの桁数制限
                     if( folderName.length() == 8  && cost.length() != 0) {
                         if(100 <= costRange && costRange <= 5000){
                             activity.onSend();
@@ -111,20 +112,16 @@ public class SendFragment extends Fragment {
                             Log.d("ssss","cost");
                         }
                     }else{
-
                         MainActivity.variable = "input cost and password is 8 characters";
                         activity.AlertDialog();
                         Log.d("ssss","no");
                     }
-
                     folderNameEditText.getEditableText().clear();
                     costEditText.getEditableText().clear();
-
                 }else{
                     MainActivity.variable = "サイズオーバー";
                     activity.AlertDialog();
                 }
-
             }
         });
     }
