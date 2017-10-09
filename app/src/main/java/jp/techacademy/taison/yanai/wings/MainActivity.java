@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     Uri uri;
     int count = 0;
+    public static long totalSize;
 
 
 
@@ -289,7 +290,6 @@ public class MainActivity extends AppCompatActivity {
             //選択されたのがnullでない場合
             if (data.getData() != null) {
 
-                //ここでサイズを取得したい
 
                 ClipData clipData = data.getClipData();
                 for (int i = 0; i < clipData.getItemCount(); i++){
@@ -299,14 +299,14 @@ public class MainActivity extends AppCompatActivity {
 
                         uri = item.getUri();
 
-                        /*String abc = uri.getPath();
-                        int abclength = abc.length();
-                        Log.d("aaaaa","abc="+ abc + "サイズ=" + abclength);*/
-                        /*
-                        File abc = getPath(this,uri);
-                        int abclength = abc.length();
-                        Log.d("aaaaa","abc="+ abc + "サイズ=" + abclength);
-*/
+                        //サイズを取得する
+                        String abc = getPath(this,uri);
+                        File fileSize = new File(abc);
+                        long size = fileSize.length();
+                        Log.d("aaaaa","サイズ=" + size);
+                        totalSize += size;
+
+
 
 
                         // URIからBitmapを取得する
@@ -351,10 +351,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void onSend() {
-        //なんで？？？
         if (mFileArrayList.size() != 0) {
             //folderがnullの時は何もしない
             if (SendFragment.folderName != null) {
+                //variable = "サイズ内ok";
+                //AlertDialog();
                 //realtimeDatabaseの設定
                 filePathRef = dataBaseReference.child(Const.FilePATH);
                 fileNameRef = filePathRef.child(user.getUid());

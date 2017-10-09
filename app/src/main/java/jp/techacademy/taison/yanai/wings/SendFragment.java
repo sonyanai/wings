@@ -58,6 +58,7 @@ public class SendFragment extends Fragment {
         view.findViewById(R.id.selectButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MainActivity.totalSize = 0;
                 user = FirebaseAuth.getInstance().getCurrentUser();
                 /*if(user != null){
                     //mAuthのときはログイン
@@ -90,29 +91,39 @@ public class SendFragment extends Fragment {
         view.findViewById(R.id.sendButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                folderName = folderNameEditText.getText().toString();
-                cost = costEditText.getText().toString();
-                int costRange = Integer.parseInt(cost);
                 MainActivity activity = (MainActivity)getActivity();
 
-                if( folderName.length() == 8  && cost.length() != 0) {
-                    if(100 <= costRange && costRange <= 5000){
-                        activity.onSend();
-                        Log.d("ssss","yes");
-                    }else{
-                        MainActivity.variable = "100<cost<5000";
-                        activity.AlertDialog();
-                        Log.d("ssss","cost");
-                    }
-                }else{
-
-                    MainActivity.variable = "input cost and password is 8 characters";
+                //サイズ制限
+                if(MainActivity.totalSize < 500000){
+                    MainActivity.variable = "サイズ内ok";
                     activity.AlertDialog();
-                    Log.d("ssss","no");
-                }
+                    folderName = folderNameEditText.getText().toString();
+                    cost = costEditText.getText().toString();
+                    int costRange = Integer.parseInt(cost);
 
-                folderNameEditText.getEditableText().clear();
-                costEditText.getEditableText().clear();
+                    if( folderName.length() == 8  && cost.length() != 0) {
+                        if(100 <= costRange && costRange <= 5000){
+                            activity.onSend();
+                            Log.d("ssss","yes");
+                        }else{
+                            MainActivity.variable = "100<cost<5000";
+                            activity.AlertDialog();
+                            Log.d("ssss","cost");
+                        }
+                    }else{
+
+                        MainActivity.variable = "input cost and password is 8 characters";
+                        activity.AlertDialog();
+                        Log.d("ssss","no");
+                    }
+
+                    folderNameEditText.getEditableText().clear();
+                    costEditText.getEditableText().clear();
+
+                }else{
+                    MainActivity.variable = "サイズオーバー";
+                    activity.AlertDialog();
+                }
 
             }
         });
