@@ -454,6 +454,7 @@ public class MainActivity extends AppCompatActivity {
             variable = "select contents";
             AlertDialog();
         }
+        SendFragment.folderImageView.setImageResource(R.drawable.scenery);
     }
     public void intentLogin(){
         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
@@ -481,6 +482,8 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
+
+    //入力したuidを持つfolderの情報のみ取得してgridViewに表示する
 
     /*public void download(){
         try {
@@ -519,7 +522,6 @@ public class MainActivity extends AppCompatActivity {
         im.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
         //this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
     }
     public void intentWatchFragment(){
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

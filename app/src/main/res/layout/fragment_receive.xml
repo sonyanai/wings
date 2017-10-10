@@ -16,6 +16,7 @@
             android:layout_weight="5"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
+            android:digits="0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"
             android:hint="search"
             android:inputType="text"
             android:id="@+id/cordEdit"/>

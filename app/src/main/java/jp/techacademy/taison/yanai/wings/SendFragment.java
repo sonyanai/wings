@@ -51,6 +51,7 @@ public class SendFragment extends Fragment {
     //Viewが生成し終わった時に呼ばれるメソッド
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        folderImageView.setImageResource(R.drawable.scenery);
 
 
 
@@ -93,8 +94,8 @@ public class SendFragment extends Fragment {
             public void onClick(View v) {
                 MainActivity activity = (MainActivity)getActivity();
 
-                //サイズ制限
-                if(MainActivity.totalSize < 500000){
+                //サイズ制限6MBくらい？
+                if(MainActivity.totalSize < 6000000){
                     MainActivity.variable = "サイズ内ok";
                     activity.AlertDialog();
                     folderName = folderNameEditText.getText().toString();
