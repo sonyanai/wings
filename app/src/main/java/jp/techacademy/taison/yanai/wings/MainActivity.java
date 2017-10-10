@@ -354,8 +354,6 @@ public class MainActivity extends AppCompatActivity {
         if (mFileArrayList.size() != 0) {
             //folderがnullの時は何もしない
             if (SendFragment.folderName != null) {
-                //variable = "サイズ内ok";
-                //AlertDialog();
                 //realtimeDatabaseの設定
                 filePathRef = dataBaseReference.child(Const.FilePATH);
                 fileNameRef = filePathRef.child(user.getUid());
