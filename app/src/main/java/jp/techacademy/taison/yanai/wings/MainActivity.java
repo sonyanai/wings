@@ -364,7 +364,6 @@ public class MainActivity extends AppCompatActivity {
                 folderTotalRef = folderNameRef.child(SendFragment.folderName);
                 folderRef = folderTotalRef;
 
-
                 //realtimeDatabaseに送るよー
                 Map<String, String> data = new HashMap<String, String>();
 
