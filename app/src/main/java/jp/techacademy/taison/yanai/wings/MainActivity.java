@@ -379,7 +379,7 @@ public class MainActivity extends AppCompatActivity {
                 //名前
                 // Preferenceから名前を取る
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-                String name = sp.getString(Const.NameKEY, "son");
+                String name = sp.getString(Const.NameKEY, "");
 
                 //価格の取得
                 String cost = SendFragment.cost;
