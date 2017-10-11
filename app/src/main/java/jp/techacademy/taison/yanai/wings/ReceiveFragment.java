@@ -221,6 +221,7 @@ public class ReceiveFragment extends Fragment {
 
 
         user = FirebaseAuth.getInstance().getCurrentUser();
+        /*
         if (user == null){
             //FirebaseUser currentUser = mAuth.getCurrentUser();
             //匿名認証のやつ
@@ -247,7 +248,7 @@ public class ReceiveFragment extends Fragment {
                             // ...
                         }
                     });
-        }
+        }*/
 
 
         //dialogの表示

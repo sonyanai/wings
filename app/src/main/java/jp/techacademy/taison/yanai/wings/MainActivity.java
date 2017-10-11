@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
     StorageReference imgRef;
     //private long fileSize;
     //private long totalSize;
-    private FirebaseAuth mAuth;
+    //private FirebaseAuth mAuth;
     Uri uri;
     int count = 0;
     public static long totalSize;
@@ -159,14 +159,14 @@ public class MainActivity extends AppCompatActivity {
 
 
         //匿名認証のやつ
-        mAuth = FirebaseAuth.getInstance();
+        //mAuth = FirebaseAuth.getInstance();
 
         mFileArrayList = new ArrayList<Uri>();
 
         //dialogメッセージの初期値
         variable = "a";
 
-
+/*
         // Check if user is signed in (non-null) and update UI accordingly.
         if(user == null){
             //FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
                             // ...
                         }
                     });
-        }
+        }*/
 
 
 
