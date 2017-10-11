@@ -95,32 +95,37 @@ public class SendFragment extends Fragment {
                 MainActivity activity = (MainActivity)getActivity();
 
                 //サイズ制限6MBくらい？
-                if(MainActivity.totalSize < 6000000){
-                    MainActivity.variable = "サイズ内ok";
-                    activity.AlertDialog();
-                    folderName = folderNameEditText.getText().toString();
-                    cost = costEditText.getText().toString();
-                    int costRange = Integer.parseInt(cost);
-
-                    //folderNameとcostの桁数制限
-                    if( folderName.length() == 8  && cost.length() != 0) {
-                        if(100 <= costRange && costRange <= 5000){
-                            activity.onSend();
-                            Log.d("ssss","yes");
-                        }else{
-                            MainActivity.variable = "100<cost<5000";
-                            activity.AlertDialog();
-                            Log.d("ssss","cost");
-                        }
-                    }else{
-                        MainActivity.variable = "input cost and password is 8 characters";
+                if(MainActivity.totalSize > 10){
+                    if(MainActivity.totalSize < 6000000){
+                        MainActivity.variable = "サイズ内ok";
                         activity.AlertDialog();
-                        Log.d("ssss","no");
+                        folderName = folderNameEditText.getText().toString();
+                        cost = costEditText.getText().toString();
+                        int costRange = Integer.parseInt(cost);
+
+                        //folderNameとcostの桁数制限
+                        if( folderName.length() == 8  && cost.length() != 0) {
+                            if(100 <= costRange && costRange <= 5000){
+                                activity.onSend();
+                                Log.d("ssss","yes");
+                            }else{
+                                MainActivity.variable = "100<cost<5000";
+                                activity.AlertDialog();
+                                Log.d("ssss","cost");
+                            }
+                        }else{
+                            MainActivity.variable = "input cost and password is 8 characters";
+                            activity.AlertDialog();
+                            Log.d("ssss","no");
+                        }
+                        folderNameEditText.getEditableText().clear();
+                        costEditText.getEditableText().clear();
+                    }else{
+                        MainActivity.variable = "サイズオーバー";
+                        activity.AlertDialog();
                     }
-                    folderNameEditText.getEditableText().clear();
-                    costEditText.getEditableText().clear();
                 }else{
-                    MainActivity.variable = "サイズオーバー";
+                    MainActivity.variable = "select contents";
                     activity.AlertDialog();
                 }
             }
