@@ -251,7 +251,7 @@ public class ReceiveFragment extends Fragment {
 
 
         //dialogの表示
-        MainActivity.variable = "ログインに成功しました";
+        MainActivity.variable = "ログインにjjkjkj成功しました";
         activity.AlertDialog();
 
         //activity.notKeyboard();
