@@ -252,7 +252,7 @@ public class ReceiveFragment extends Fragment {
 
 
         //dialogの表示
-        MainActivity.variable = "ログインにjjkjkj成功しました";
+        MainActivity.variable = "ログインに成功しました";
         activity.AlertDialog();
 
         //activity.notKeyboard();
@@ -281,10 +281,23 @@ public class ReceiveFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 cord = cordEdit.getText().toString();
-                MainActivity activity = (MainActivity)getActivity();
-                //activity.download();
-                activity.intentWatchFragment();
 
+                /*MainActivity activity = (MainActivity)getActivity();
+                //activity.download();
+                activity.intentWatchFragment();*/
+
+
+
+                Bundle bundle = new Bundle();
+                bundle.putString("mUid", cord);
+
+                SearchFragment fragmentSearch = new SearchFragment();
+                fragmentSearch.setArguments(bundle);
+
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.container,fragmentSearch,SearchFragment.TAG)
+                        .commit();
+/*
                 //assetsに画像を保存する
                 //assesフォルダに入っているaisha_3.jpgを表示させる
                 try {
@@ -293,8 +306,10 @@ public class ReceiveFragment extends Fragment {
                 } catch (IOException e) {
                     Log.d("Assets","Error");
                 }
+                */
             }
         });
+
     }
 
     private void getImagePath() {
