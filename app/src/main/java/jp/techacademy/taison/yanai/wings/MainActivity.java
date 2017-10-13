@@ -79,8 +79,6 @@ public class MainActivity extends AppCompatActivity {
     StorageReference storageRef;
     //strageの中にimgRefという領域を作りますよ
     StorageReference imgRef;
-    //private long fileSize;
-    //private long totalSize;
     //private FirebaseAuth mAuth;
     Uri uri;
     int count = 0;
