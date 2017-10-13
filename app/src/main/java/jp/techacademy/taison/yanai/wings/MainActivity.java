@@ -518,18 +518,6 @@ public class MainActivity extends AppCompatActivity {
 
         //this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
-    public void intentWatchFragment(){
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        // Fragmentを作成・初期化します
-        fragmentWatch = new WatchFragment();
-        // コードからFragmentを追加
-        // Fragmentの追加や削除といった変更を行う際は、Transactionを利用します
-        // 新しく追加を行うのでaddを使用します
-        // メソッドの1つ目の引数は対象のViewGroupのID、2つ目の引数は追加するfragment
-        transaction.replace(R.id.container, fragmentWatch);
-        // 最後にcommitを使用することで変更を反映します
-        transaction.commit();
-    }
 
     public static String getPath(Context context, Uri uri) {
         ContentResolver contentResolver = context.getContentResolver();
