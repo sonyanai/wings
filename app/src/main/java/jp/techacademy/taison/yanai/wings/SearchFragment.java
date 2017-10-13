@@ -43,7 +43,6 @@ public class SearchFragment extends Fragment {
     private FolderListAdapter mAdapter;
     DatabaseReference dataBaseReference;
     DatabaseReference folderPathRef;
-    FirebaseUser user;
     GridView gridView;
     String intentUid;
 
@@ -70,7 +69,6 @@ public class SearchFragment extends Fragment {
         //firebaseを使えるようにする
         dataBaseReference = FirebaseDatabase.getInstance().getReference();
         //MainActivityのメソッドを使うときはactivity.methodName()でいける
-        MainActivity activity = (MainActivity)getActivity();
 
 
         //realtimeDatabase
@@ -119,13 +117,7 @@ public class SearchFragment extends Fragment {
         };
 
 
-
-
-        //mEventListenerの呼び出しSLgAkEudD6cytom6cKVz9RCl1Ej1
-        //folderPathRef.addChildEventListener(mEventListener);
-
         folderPathRef.orderByChild("mUid").equalTo(intentUid).addChildEventListener(mEventListener);
-
 
 
         //gridVieを押したときの処理
