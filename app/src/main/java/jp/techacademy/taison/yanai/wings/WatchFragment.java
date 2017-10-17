@@ -74,8 +74,8 @@ public class WatchFragment extends Fragment {
 
 
         //フィルター画像
-        //visivility.setImageAlpha(190);
-        //visivility.setImageResource(R.drawable.mosaic);
+        visivility.setImageAlpha(190);
+        visivility.setImageResource(R.drawable.mosaic);
 
         Bundle bundle = getArguments();
         intentUid = bundle.getString("mUid");
