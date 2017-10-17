@@ -265,16 +265,16 @@ public class MainActivity extends AppCompatActivity {
         // ギャラリーから選択するIntent
         Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
         //何を選択できるようにするか
-        //galleryIntent.setType("*/*");
+        galleryIntent.setType("*/*");
         //↑
-        galleryIntent.setType("image/*,video/*");
+        //galleryIntent.setType("image/*,video/*");
         //galleryIntent.addCategory(Intent.CATEGORY_OPENABLE);
         //複数選択可能
         galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         //選択した動画像を読み込む
-        //galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+        galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
         //↑
-        galleryIntent.setAction(Intent.ACTION_PICK);
+        //galleryIntent.setAction(Intent.ACTION_PICK);
         //galleryに飛ばして選択させる
         startActivityForResult(Intent.createChooser(galleryIntent,"画像/動画を選択"), CHOOSER_REQUEST_CODE);
 
@@ -290,60 +290,74 @@ public class MainActivity extends AppCompatActivity {
 
 
                 ClipData clipData = data.getClipData();
-                for (int i = 0; i < clipData.getItemCount(); i++){
-                    try {
-                        //エラーが出なかった時にしたい処理
-                        ClipData.Item item = clipData.getItemAt(i);
-
-                        uri = item.getUri();
-
-                        //サイズを取得する
-                        String abc = getPath(this,uri);
-                        File fileSize = new File(abc);
-                        long size = fileSize.length();
-                        Log.d("aaaaa","サイズ=" + size);
-                        totalSize += size;
-
-
-
-
-                        // URIからBitmapを取得する
-                        Bitmap image;
+                if(clipData != null){
+                    for (int i = 0; i < clipData.getItemCount(); i++){
                         try {
-                            ContentResolver contentResolver = getContentResolver();
-                            InputStream inputStream = contentResolver.openInputStream(uri);
-                            image = BitmapFactory.decodeStream(inputStream);
-                            inputStream.close();
-                        } catch (Exception e) {
-                            return;
+                            //エラーが出なかった時にしたい処理
+                            ClipData.Item item = clipData.getItemAt(i);
+
+                            uri = item.getUri();
+
+                            //サイズを取得する
+                            String abc = getPath(this,uri);
+                            File fileSize = new File(abc);
+                            long size = fileSize.length();
+                            Log.d("aaaaa","サイズ=" + size);
+                            totalSize += size;
+
+
+
+
+                            // URIからBitmapを取得する
+                            Bitmap image;
+                            try {
+                                ContentResolver contentResolver = getContentResolver();
+                                InputStream inputStream = contentResolver.openInputStream(uri);
+                                image = BitmapFactory.decodeStream(inputStream);
+                                inputStream.close();
+                            } catch (Exception e) {
+                                return;
+                            }
+
+
+                            //最初に選択したのをfolder画像にしたい
+                            if(i==0){
+                                // BitmapをImageViewに設定する
+                                SendFragment.folderImageView.setImageBitmap(image);
+                            }
+
+
+                            //uriをarraylistに追加
+                            mFileArrayList.add(uri);
+
+                            InputStream in = getContentResolver().openInputStream(uri);
+                            //Bitmap img = BitmapFactory.decodeStream(in);
+                            //ファイルを開いたら閉じなければならない(書き込むときはtry-catch}のあとに書く)
+                            in.close();
+                            // 選択した画像[i]を表示
+                            //targetView.setImageBitmap(img);
+                            //エラー処理
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                            //エラー処理
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
-
-
-                        //最初に選択したのをfolder画像にしたい
-                        if(i==0){
-                            // BitmapをImageViewに設定する
-                            SendFragment.folderImageView.setImageBitmap(image);
-                        }
-
-
-                        //uriをarraylistに追加
-                        mFileArrayList.add(uri);
-
-                        InputStream in = getContentResolver().openInputStream(uri);
-                        //Bitmap img = BitmapFactory.decodeStream(in);
-                        //ファイルを開いたら閉じなければならない(書き込むときはtry-catch}のあとに書く)
-                        in.close();
-                        // 選択した画像[i]を表示
-                        //targetView.setImageBitmap(img);
-                        //エラー処理
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                        //エラー処理
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
                 }
+
+            }else{
+                //動画取得
+
+
+
             }
+
+
+                //uriをarraylistに追加
+                mFileArrayList.add(uri);
+
+
         }
     }
 

@@ -56,7 +56,7 @@ public class SendFragment extends Fragment {
 
 
         // Buttonのクリックした時の処理を書きます
-        view.findViewById(R.id.selectButton).setOnClickListener(new View.OnClickListener() {
+        selectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MainActivity.totalSize = 0;
@@ -83,13 +83,13 @@ public class SendFragment extends Fragment {
                     MainActivity activity = (MainActivity) getActivity();
                     activity.intentLogin();
                     //ひとまず9.28
-                    //activity.onSelfCheck();
+                    activity.onSelfCheck();
                 }
             }
         });
 
         //画像の有無判断はMainActivityでやる
-        view.findViewById(R.id.sendButton).setOnClickListener(new View.OnClickListener() {
+        sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MainActivity activity = (MainActivity)getActivity();

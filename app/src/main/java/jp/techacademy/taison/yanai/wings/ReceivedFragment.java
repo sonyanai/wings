@@ -47,6 +47,7 @@ public class ReceivedFragment extends Fragment {
     GridView gridView;
     Button sendedButton;
     String intentUid;
+    FirebaseUser user;
 
     //Fragmentで表示するViewを作成するメソッド
     @Override
@@ -61,6 +62,8 @@ public class ReceivedFragment extends Fragment {
     //Viewが生成し終わった時に呼ばれるメソッド
     public void onViewCreated(View view,Bundle savedInstanceState){
         super.onViewCreated(view,savedInstanceState);
+
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
 /*
 
@@ -138,14 +141,17 @@ public class ReceivedFragment extends Fragment {
             }
         });
 */
-        view.findViewById(R.id.sentFolderButton).setOnClickListener(new View.OnClickListener() {
+        sendedButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                SentFragment fragmentSent = new SentFragment();
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.container,fragmentSent,SentFragment.TAG)
-                        .commit();
+                public void onClick(View v) {
+                if(SendFragment.user != null){
+                    SentFragment fragmentSent = new SentFragment();
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.container,fragmentSent,SentFragment.TAG)
+                            .commit();
+                }
             }
+
         });
 
 

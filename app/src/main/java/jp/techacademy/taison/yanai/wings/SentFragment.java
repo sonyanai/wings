@@ -38,8 +38,8 @@ public class SentFragment extends Fragment {
     DatabaseReference dataBaseReference;
     DatabaseReference folderPathRef;
     GridView gridView;
-    String intentUid;
     FirebaseUser user;
+    String Uid;
 
 
     //Fragmentで表示するViewを作成するメソッド
@@ -58,7 +58,7 @@ public class SentFragment extends Fragment {
         super.onViewCreated(view,savedInstanceState);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
-        String Uid = user.getUid();
+        Uid = user.getUid();
 
         //firebaseを使えるようにする
         dataBaseReference = FirebaseDatabase.getInstance().getReference();
