@@ -261,16 +261,16 @@ public class MainActivity extends AppCompatActivity {
         // ギャラリーから選択するIntent
         Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
         //何を選択できるようにするか
-        galleryIntent.setType("*/*");
+        //galleryIntent.setType("*/*");
         //↑
-        //galleryIntent.setType("image/*,video/*");
+        galleryIntent.setType("image/*,video/*");
         //galleryIntent.addCategory(Intent.CATEGORY_OPENABLE);
         //複数選択可能
         galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         //選択した動画像を読み込む
-        galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+        //galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
         //↑
-        //galleryIntent.setAction(Intent.ACTION_PICK);
+        galleryIntent.setAction(Intent.ACTION_PICK);
         //galleryに飛ばして選択させる
         startActivityForResult(Intent.createChooser(galleryIntent,"画像/動画を選択"), CHOOSER_REQUEST_CODE);
 

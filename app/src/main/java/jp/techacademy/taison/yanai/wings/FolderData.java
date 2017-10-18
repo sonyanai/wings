@@ -6,9 +6,6 @@ package jp.techacademy.taison.yanai.wings;
 
 public class FolderData {
 
-    //何が必要？
-
-
     private String mUid;
     private String mDate;
     private String mName;
@@ -26,7 +23,7 @@ public class FolderData {
             return mDate;
         }
 
-        public String getmName(){
+        public String getName(){
             return mName;
         }
 

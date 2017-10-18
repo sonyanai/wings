@@ -63,7 +63,7 @@ public class WatchFragment extends Fragment {
     String intentFolderName;
     Button buyButton;
     DatabaseReference folderPathRef;
-    private ArrayList<FolderData> folderList = new ArrayList<FolderData>();
+    private ArrayList<KeyFolderData> KeyFolderList = new ArrayList<KeyFolderData>();
 
     //Fragmentで表示するViewを作成するメソッド
     @Override
@@ -145,8 +145,6 @@ public class WatchFragment extends Fragment {
 
 
                             Log.d("aaaaa","suc");
-                            //count += 1;
-                            //fileRef.changeEventListener(mEventListener);
 
                             //postの第一引数
                             fileName[0] = localFile.toString();
@@ -179,20 +177,6 @@ public class WatchFragment extends Fragment {
             }
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                //ここでcountの変更を反映させる
-                /*HashMap map = (HashMap) dataSnapshot.getValue();
-                for(FolderData post:folderList){
-                    post.getFolderName().equals(intentFolderName);
-
-
-                    String count = (String) map.get("count");
-                    int totalCount;
-                    totalCount = Integer.parseInt(count) + 1;
-                    count = String.valueOf(totalCount);
-
-                }
-                */
-
             }
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
@@ -204,12 +188,6 @@ public class WatchFragment extends Fragment {
             public void onCancelled(DatabaseError databaseError) {
             }
         };
-
-
-
-
-
-
 
         //dialogの表示
         MainActivity.variable = "WatchFragmentにログインしました";
@@ -260,14 +238,13 @@ public class WatchFragment extends Fragment {
 
 
                 //FolderDataが入ってるやつ
-                folderList = new ArrayList<FolderData>();
+                KeyFolderList = new ArrayList<KeyFolderData>();
 
                 //countに+1する処理
                 //fEventListenerの設定と初期化
                 ChildEventListener fEventListener = new ChildEventListener() {
                     @Override
                     public void onChildAdded(final DataSnapshot dataSnapshot, String s) {
-                        //try {
 
                         HashMap map = (HashMap) dataSnapshot.getValue();
                         final String mUid = (String) map.get("mUid");
@@ -277,16 +254,41 @@ public class WatchFragment extends Fragment {
                         final String cost = (String) map.get("cost");
                         final String folderName = (String) map.get("folderName");
                         final String imageString = (String) map.get("image");
+                        String folderKey = dataSnapshot.getKey();
+
+                        KeyFolderData post = new KeyFolderData(mUid, date, name, count, cost, folderName, imageString,folderKey );
+                        KeyFolderList.add(post);
 
 
 
-                        FolderData post = new FolderData(mUid, date, name, count, cost, folderName, imageString );
-                        folderList.add(post);
+                        for(KeyFolderData compareFolderName : KeyFolderList){
+                            if(compareFolderName.getFolderName().equals(intentFolderName)){
+                                //countを取得して+1
+                                String oldCount = compareFolderName.getCount();
+                                int sameOldCount =Integer.parseInt(oldCount);
+                                int totalCount;
+                                totalCount = sameOldCount + 1;
+                                String newCount = String.valueOf(totalCount);
+
+                                //keyを取得
+                                String gotFolderKey = compareFolderName.getKey();
+
+                                //countの変更
+                                Map<String, String> data = new HashMap<String, String>();
+                                //一旦すべてのデータが消えてここでputしたやつしか保存されないからすべて保存しなおす
+                                data.put("cost", cost);
+                                data.put("count", newCount);
+                                data.put("date", date);
+                                data.put("folderName", folderName);
+                                data.put("image", imageString);
+                                data.put("mUid", mUid);
+                                data.put("name", name);
+                                folderPathRef.child(gotFolderKey).setValue(data);
+                            }
+                        }
                     }
-
                     @Override
                     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                        //ここでcountの変更を反映させる
                     }
                     @Override
                     public void onChildRemoved(DataSnapshot dataSnapshot) {
@@ -298,51 +300,8 @@ public class WatchFragment extends Fragment {
                     public void onCancelled(DatabaseError databaseError) {
                     }
                 };
-
+                //fEventListenerの呼び出し
                 folderPathRef.addChildEventListener(fEventListener);
-
-                for(FolderData compareFolderName : folderList){
-                    if(compareFolderName.getFolderName().equals(intentFolderName)){
-                        //countを取得して+1
-                        String oldCount = compareFolderName.getCount();
-                        int sameOldCount =Integer.parseInt(oldCount);
-                        int totalCount;
-                        totalCount = sameOldCount + 1;
-                        String newCount = String.valueOf(totalCount);
-
-
-
-
-                        //keyを取得
-                        String gotKey = "rrr";
-
-
-
-
-
-
-                        //countを削除
-                        folderPathRef.child(gotKey).child("count").removeValue();
-
-
-
-                        //countを追加
-                        String folderKey = folderPathRef.child(gotKey).child("count").push().getKey();
-                        //送信するデータを指定
-                        String folderCount = newCount;
-                        //postvalueをHashMapで初期化,String型からMap型に変換
-                        Map<String, Object> folderPostValues = new HashMap<>();
-                        //key,valueの設定
-                        postValues.put("count",folderCount);
-                        // 送信用Map初期化
-                        Map<String, Object> folderChildUpdates = new HashMap<>();
-                        // 送信用Mapにデータを設定
-                        folderChildUpdates.put("count", folderPostValues);
-                        // Firebaseに送信用Mapを渡し、更新を依頼
-                        favoritePathRef.child(gotKey).child("count").updateChildren(folderChildUpdates);
-                    }
-                }
-
             }
         });
     }
