@@ -5,8 +5,13 @@
     android:orientation="vertical"
     android:id="@+id/gridContainer">
 
-    <GridView
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="buy"
+        android:id="@+id/buyButton"/>
 
+    <GridView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/rankingGridView"
@@ -21,5 +26,7 @@
         android:layout_height="match_parent"
         android:id="@+id/visivility_imageView"
         android:scaleType="fitXY"/>
+
+
 
 </RelativeLayout>

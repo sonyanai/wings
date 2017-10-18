@@ -103,7 +103,6 @@ public class SearchFragment extends Fragment {
             }
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                //ここでcountの変更を反映させる
             }
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {

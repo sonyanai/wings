@@ -5,11 +5,13 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 
@@ -56,6 +58,8 @@ public class WatchFragment extends Fragment {
     public static String cord;
     String intentUid;
     String intentFolderName;
+    Button buyButton;
+    DatabaseReference folderPathRef;
 
     //Fragmentで表示するViewを作成するメソッド
     @Override
@@ -66,6 +70,7 @@ public class WatchFragment extends Fragment {
         // GridViewのインスタンスを生成
         gridView = (GridView)v.findViewById(R.id.rankingGridView);
         visivility = (ImageView)v.findViewById(R.id.visivility_imageView);
+        buyButton = (Button)v.findViewById(R.id.buyButton);
         return v;
     }
     //Viewが生成し終わった時に呼ばれるメソッド
@@ -99,6 +104,8 @@ public class WatchFragment extends Fragment {
         fileNameRef = filePathRef.child(intentUid);
         fileTotalRef = fileNameRef.child(intentFolderName);
         fileRef = fileTotalRef;
+
+        folderPathRef = dataBaseReference.child(Const.FolderPATH);
 
 
         //firebaseStorage
@@ -212,6 +219,13 @@ public class WatchFragment extends Fragment {
                         .replace(R.id.container,fragmentFilter,FilterFragment.TAG)
                         .commit();
 
+            }
+        });
+
+        buyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                folderPathRef.
             }
         });
 
