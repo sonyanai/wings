@@ -65,6 +65,7 @@ public class ReceivedFragment extends Fragment {
 
         user = FirebaseAuth.getInstance().getCurrentUser();
 
+        //表示名も一緒に取得されちゃうけど表示名は7文字までだから7文字より大きい場合のみ取得するようにする！
 /*
 
 

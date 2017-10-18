@@ -35,6 +35,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by taiso on 2017/08/27.
  */
@@ -46,6 +48,7 @@ public class WatchFragment extends Fragment {
     private GridListAdapter mAdapter;
     DatabaseReference dataBaseReference;
     DatabaseReference filePathRef;
+    DatabaseReference favoritePathRef;
     DatabaseReference fileRef;
     DatabaseReference fileNameRef;
     DatabaseReference fileTotalRef;
@@ -106,6 +109,8 @@ public class WatchFragment extends Fragment {
         fileRef = fileTotalRef;
 
         folderPathRef = dataBaseReference.child(Const.FolderPATH);
+
+        favoritePathRef = dataBaseReference.child(Const.UsersPATH).child(user.getUid());
 
 
         //firebaseStorage
@@ -176,6 +181,19 @@ public class WatchFragment extends Fragment {
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 //ここでcountの変更を反映させる
+                /*HashMap map = (HashMap) dataSnapshot.getValue();
+                for(FolderData post:folderList){
+                    post.getFolderName().equals(intentFolderName);
+
+
+                    String count = (String) map.get("count");
+                    int totalCount;
+                    totalCount = Integer.parseInt(count) + 1;
+                    count = String.valueOf(totalCount);
+
+                }
+                */
+
             }
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
@@ -225,11 +243,26 @@ public class WatchFragment extends Fragment {
         buyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                folderPathRef.
+                //勝った人の領域にそのfolderNameを追加する
+                //Firebaseにデータ作成、データのkey取得
+                String key = favoritePathRef.push().getKey();
+                //送信するデータを指定
+                String value = intentFolderName;
+                //postvalueをHashMapで初期化,String型からMap型に変換
+                Map<String, Object> postValues = new HashMap<>();
+                //key,valueの設定
+                postValues.put(key,intentFolderName);
+                // 送信用Map初期化
+                Map<String, Object> childUpdates = new HashMap<>();
+                // 送信用Mapにデータを設定
+                childUpdates.put(key, postValues);
+                // Firebaseに送信用Mapを渡し、更新を依頼
+                favoritePathRef.updateChildren(childUpdates);
+
+
+
             }
         });
-
-
     }
 
     private void getImagePath() {

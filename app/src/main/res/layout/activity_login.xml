@@ -29,6 +29,7 @@ tools:context="jp.techacademy.taison.yanai.wings.LoginActivity">
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:hint="表示名"
+    android:maxLength="7"
     android:id="@+id/nameText"
     android:layout_weight="1" />
 

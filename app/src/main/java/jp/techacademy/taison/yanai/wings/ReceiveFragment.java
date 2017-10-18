@@ -216,7 +216,7 @@ public class ReceiveFragment extends Fragment {
         dataBaseReference = FirebaseDatabase.getInstance().getReference();
         storage = FirebaseStorage.getInstance();
         //MainActivityのメソッドを使うときはactivity.methodName()でいける
-        MainActivity activity = (MainActivity)getActivity();
+        final MainActivity activity = (MainActivity)getActivity();
 
 
 
@@ -261,16 +261,19 @@ public class ReceiveFragment extends Fragment {
         //gridVieを押したときの処理
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Bundle bundle = new Bundle();
-                bundle.putString("mUid", folderList.get(position).getUid());
-                bundle.putString("folderName", folderList.get(position).getFolderName());
-                WatchFragment fragmentWatch = new WatchFragment();
-                fragmentWatch.setArguments(bundle);
+                if(user != null){
+                    Bundle bundle = new Bundle();
+                    bundle.putString("mUid", folderList.get(position).getUid());
+                    bundle.putString("folderName", folderList.get(position).getFolderName());
+                    WatchFragment fragmentWatch = new WatchFragment();
+                    fragmentWatch.setArguments(bundle);
 
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.container,fragmentWatch,WatchFragment.TAG)
-                        .commit();
-
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.container,fragmentWatch,WatchFragment.TAG)
+                            .commit();
+                }else{
+                    activity.intentLogin();
+                }
             }
         });
 
