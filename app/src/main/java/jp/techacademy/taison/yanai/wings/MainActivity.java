@@ -62,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
     public SendFragment fragmentSend;
     public ReceivedFragment fragmentReceived;
     public ProfileFragment fragmentProfile;
-    public WatchFragment fragmentWatch;
     public static String variable;
     DatabaseReference dataBaseReference;
     DatabaseReference filePathRef;
@@ -70,9 +69,6 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference fileTotalRef;
     DatabaseReference fileRef;
     DatabaseReference folderPathRef;
-    DatabaseReference folderNameRef;
-    DatabaseReference folderTotalRef;
-    DatabaseReference folderRef;
     FirebaseUser user;
     //firebasestrageをstrageという名前で使いますよ.これで Cloud Storage が使えるようになる
     FirebaseStorage storage;
@@ -372,9 +368,6 @@ public class MainActivity extends AppCompatActivity {
                 fileTotalRef = fileNameRef.child(SendFragment.folderName);
                 fileRef = fileTotalRef;
                 folderPathRef = dataBaseReference.child(Const.FolderPATH);
-                folderNameRef = folderPathRef.child(user.getUid());
-                folderTotalRef = folderNameRef.child(SendFragment.folderName);
-                folderRef = folderTotalRef;
 
                 //realtimeDatabaseに送るよー
                 Map<String, String> data = new HashMap<String, String>();

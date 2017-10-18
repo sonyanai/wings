@@ -63,6 +63,7 @@ public class WatchFragment extends Fragment {
     String intentFolderName;
     Button buyButton;
     DatabaseReference folderPathRef;
+    private ArrayList<FolderData> folderList = new ArrayList<FolderData>();
 
     //Fragmentで表示するViewを作成するメソッド
     @Override
@@ -107,9 +108,7 @@ public class WatchFragment extends Fragment {
         fileNameRef = filePathRef.child(intentUid);
         fileTotalRef = fileNameRef.child(intentFolderName);
         fileRef = fileTotalRef;
-
         folderPathRef = dataBaseReference.child(Const.FolderPATH);
-
         favoritePathRef = dataBaseReference.child(Const.UsersPATH).child(user.getUid());
 
 
@@ -251,7 +250,7 @@ public class WatchFragment extends Fragment {
                 //postvalueをHashMapで初期化,String型からMap型に変換
                 Map<String, Object> postValues = new HashMap<>();
                 //key,valueの設定
-                postValues.put(key,intentFolderName);
+                postValues.put(key,value);
                 // 送信用Map初期化
                 Map<String, Object> childUpdates = new HashMap<>();
                 // 送信用Mapにデータを設定
@@ -260,6 +259,89 @@ public class WatchFragment extends Fragment {
                 favoritePathRef.updateChildren(childUpdates);
 
 
+                //FolderDataが入ってるやつ
+                folderList = new ArrayList<FolderData>();
+
+                //countに+1する処理
+                //fEventListenerの設定と初期化
+                ChildEventListener fEventListener = new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(final DataSnapshot dataSnapshot, String s) {
+                        //try {
+
+                        HashMap map = (HashMap) dataSnapshot.getValue();
+                        final String mUid = (String) map.get("mUid");
+                        final String date = (String) map.get("date");
+                        final String name = (String) map.get("name");
+                        final String count = (String) map.get("count");
+                        final String cost = (String) map.get("cost");
+                        final String folderName = (String) map.get("folderName");
+                        final String imageString = (String) map.get("image");
+
+
+
+                        FolderData post = new FolderData(mUid, date, name, count, cost, folderName, imageString );
+                        folderList.add(post);
+                    }
+
+                    @Override
+                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                        //ここでcountの変更を反映させる
+                    }
+                    @Override
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+                    }
+                    @Override
+                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                };
+
+                folderPathRef.addChildEventListener(fEventListener);
+
+                for(FolderData compareFolderName : folderList){
+                    if(compareFolderName.getFolderName().equals(intentFolderName)){
+                        //countを取得して+1
+                        String oldCount = compareFolderName.getCount();
+                        int sameOldCount =Integer.parseInt(oldCount);
+                        int totalCount;
+                        totalCount = sameOldCount + 1;
+                        String newCount = String.valueOf(totalCount);
+
+
+
+
+                        //keyを取得
+                        String gotKey = "rrr";
+
+
+
+
+
+
+                        //countを削除
+                        folderPathRef.child(gotKey).child("count").removeValue();
+
+
+
+                        //countを追加
+                        String folderKey = folderPathRef.child(gotKey).child("count").push().getKey();
+                        //送信するデータを指定
+                        String folderCount = newCount;
+                        //postvalueをHashMapで初期化,String型からMap型に変換
+                        Map<String, Object> folderPostValues = new HashMap<>();
+                        //key,valueの設定
+                        postValues.put("count",folderCount);
+                        // 送信用Map初期化
+                        Map<String, Object> folderChildUpdates = new HashMap<>();
+                        // 送信用Mapにデータを設定
+                        folderChildUpdates.put("count", folderPostValues);
+                        // Firebaseに送信用Mapを渡し、更新を依頼
+                        favoritePathRef.child(gotKey).child("count").updateChildren(folderChildUpdates);
+                    }
+                }
 
             }
         });
