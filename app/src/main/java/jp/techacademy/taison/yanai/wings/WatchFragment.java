@@ -45,6 +45,7 @@ public class WatchFragment extends Fragment {
     public static final String TAG = "WatchFragment";
     //receiveFragmentを開いたときに出てくるgridViewのリスト
     private ArrayList<ImageData> gridList = new ArrayList<ImageData>();  //ImageDataList
+    private ArrayList<String> boughtFolderList = new ArrayList<String>();
     private GridListAdapter mAdapter;
     DatabaseReference dataBaseReference;
     DatabaseReference filePathRef;
@@ -95,7 +96,7 @@ public class WatchFragment extends Fragment {
         dataBaseReference = FirebaseDatabase.getInstance().getReference();
         storage = FirebaseStorage.getInstance();
         //MainActivityのメソッドを使うときはactivity.methodName()でいける
-        MainActivity activity = (MainActivity)getActivity();
+        final MainActivity activity = (MainActivity)getActivity();
 
 
 
@@ -118,6 +119,48 @@ public class WatchFragment extends Fragment {
         //ImageDataが入ってるやつ
         gridList = new ArrayList<ImageData>();
         mAdapter = new GridListAdapter(this.getActivity(), R.layout.grid_items);
+
+
+
+
+
+
+
+        ChildEventListener bEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(final DataSnapshot dataSnapshot, String s) {
+
+                HashMap map = (HashMap) dataSnapshot.getValue();
+
+
+                //280行ランダムのキーだからどうやってfolderNameを取得すればいいん？
+                final String folderName = (String) map.get("aaa");
+
+                if(folderName.length()>7){
+                    String boughtPost = new String( folderName );
+                    boughtFolderList.add(boughtPost);
+                }
+            }
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            }
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            }
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        };
+
+        favoritePathRef.child("boughtFolderName").addChildEventListener(bEventListener);
+
+
+
+
+
 
 
 
@@ -220,6 +263,7 @@ public class WatchFragment extends Fragment {
         buyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /*
                 //勝った人の領域にそのfolderNameを追加する
                 //Firebaseにデータ作成、データのkey取得
                 String key = favoritePathRef.push().getKey();
@@ -235,7 +279,7 @@ public class WatchFragment extends Fragment {
                 childUpdates.put(key, postValues);
                 // Firebaseに送信用Mapを渡し、更新を依頼
                 favoritePathRef.updateChildren(childUpdates);
-
+*/
 
                 //FolderDataが入ってるやつ
                 KeyFolderList = new ArrayList<KeyFolderData>();
@@ -263,27 +307,51 @@ public class WatchFragment extends Fragment {
 
                         for(KeyFolderData compareFolderName : KeyFolderList){
                             if(compareFolderName.getFolderName().equals(intentFolderName)){
-                                //countを取得して+1
-                                String oldCount = compareFolderName.getCount();
-                                int sameOldCount =Integer.parseInt(oldCount);
-                                int totalCount;
-                                totalCount = sameOldCount + 1;
-                                String newCount = String.valueOf(totalCount);
+                                if(boughtFolderList.indexOf(intentFolderName)>-1){
+                                    //なんで何回もでちゃうのー
+                                    MainActivity.variable="購入済みです";
+                                    activity.AlertDialog();
+                                }else{
+                                    //勝った人の領域にそのfolderNameを追加する
+                                    //Firebaseにデータ作成、データのkey取得
+                                    String key = favoritePathRef.child("boughtFolderName").push().getKey();
+                                    //送信するデータを指定
+                                    String value = intentFolderName;
+                                    //postvalueをHashMapで初期化,String型からMap型に変換
+                                    Map<String, Object> postValues = new HashMap<>();
+                                    //key,valueの設定
+                                    postValues.put("aaa",value);
+                                    // 送信用Map初期化
+                                    Map<String, Object> childUpdates = new HashMap<>();
+                                    // 送信用Mapにデータを設定
+                                    childUpdates.put(key, postValues);
+                                    // Firebaseに送信用Mapを渡し、更新を依頼
+                                    favoritePathRef.child("boughtFolderName").updateChildren(childUpdates);
 
-                                //keyを取得
-                                String gotFolderKey = compareFolderName.getKey();
 
-                                //countの変更
-                                Map<String, String> data = new HashMap<String, String>();
-                                //一旦すべてのデータが消えてここでputしたやつしか保存されないからすべて保存しなおす
-                                data.put("cost", cost);
-                                data.put("count", newCount);
-                                data.put("date", date);
-                                data.put("folderName", folderName);
-                                data.put("image", imageString);
-                                data.put("mUid", mUid);
-                                data.put("name", name);
-                                folderPathRef.child(gotFolderKey).setValue(data);
+
+                                    //countを取得して+1
+                                    String oldCount = compareFolderName.getCount();
+                                    int sameOldCount =Integer.parseInt(oldCount);
+                                    int totalCount;
+                                    totalCount = sameOldCount + 1;
+                                    String newCount = String.valueOf(totalCount);
+
+                                    //keyを取得
+                                    String gotFolderKey = compareFolderName.getKey();
+
+                                    //countの変更
+                                    Map<String, String> data = new HashMap<String, String>();
+                                    //一旦すべてのデータが消えてここでputしたやつしか保存されないからすべて保存しなおす
+                                    data.put("cost", cost);
+                                    data.put("count", newCount);
+                                    data.put("date", date);
+                                    data.put("folderName", folderName);
+                                    data.put("image", imageString);
+                                    data.put("mUid", mUid);
+                                    data.put("name", name);
+                                    folderPathRef.child(gotFolderKey).setValue(data);
+                                }
                             }
                         }
                     }
