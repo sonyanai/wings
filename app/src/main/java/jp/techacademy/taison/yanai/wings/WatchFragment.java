@@ -303,19 +303,19 @@ public class WatchFragment extends Fragment {
                     if(compareFolderName.getFolderName().equals(intentFolderName)) {
                         //勝った人の領域にそのfolderNameを追加する
                         //Firebaseにデータ作成、データのkey取得
-                        String key = favoritePathRef.push().getKey();
+                        String key = favoritePathRef.child("boughtFolder").push().getKey();
                         //送信するデータを指定
                         String value = intentFolderName;
                         //postvalueをHashMapで初期化,String型からMap型に変換
                         Map<String, Object> postValues = new HashMap<>();
                         //key,valueの設定
-                        postValues.put(key,value);
+                        postValues.put("gotFolder",value);
                         // 送信用Map初期化
                         Map<String, Object> childUpdates = new HashMap<>();
                         // 送信用Mapにデータを設定
                         childUpdates.put(key, postValues);
                         // Firebaseに送信用Mapを渡し、更新を依頼
-                        favoritePathRef.updateChildren(childUpdates);
+                        favoritePathRef.child("boughtFolder").updateChildren(childUpdates);
 
 
                         //countを取得して+1

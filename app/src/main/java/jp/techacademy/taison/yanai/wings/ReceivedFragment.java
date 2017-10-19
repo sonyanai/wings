@@ -41,11 +41,13 @@ import java.util.HashMap;
 public class ReceivedFragment extends Fragment {
     public static final String TAG = "ReceivedFragment";
     private ArrayList<FolderData> folderList = new ArrayList<FolderData>();  //FolderDataList
+    private ArrayList<String> folderNameList = new ArrayList<String>();
     private FolderListAdapter mAdapter;
     DatabaseReference dataBaseReference;
     DatabaseReference folderPathRef;
     GridView gridView;
     Button sendedButton;
+    DatabaseReference favoritePathRef;
     String intentUid;
     FirebaseUser user;
 
@@ -73,17 +75,48 @@ public class ReceivedFragment extends Fragment {
         //realtimeDatabase
         folderPathRef = dataBaseReference.child(Const.FolderPATH);
 
+        favoritePathRef = dataBaseReference.child(Const.UsersPATH).child(user.getUid());
+
         //FolderDataが入ってるやつ
         folderList = new ArrayList<FolderData>();
         mAdapter = new FolderListAdapter(this.getActivity(), R.layout.grid_folder);
 
+        folderNameList = new ArrayList<String>();
 
-/*
+
+
+        ChildEventListener fEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(final DataSnapshot dataSnapshot, String s) {
+                HashMap map = (HashMap) dataSnapshot.getValue();
+                final String folderName = (String) map.get("gotFolder");
+
+
+                String post = new String( folderName );
+                folderNameList.add(post);
+
+            }
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            }
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            }
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        };
+
+        favoritePathRef.child("boughtFolder").addChildEventListener(fEventListener);
+
+
         //mEventListenerの設定と初期化
         ChildEventListener mEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(final DataSnapshot dataSnapshot, String s) {
-                //try {
                 HashMap map = (HashMap) dataSnapshot.getValue();
                 final String mUid = (String) map.get("mUid");
                 final String date = (String) map.get("date");
@@ -95,10 +128,22 @@ public class ReceivedFragment extends Fragment {
 
 
                 FolderData post = new FolderData(mUid, date, name, count, cost, folderName, imageString );
-                folderList.add(post);
-                mAdapter.setFolderDataArrayList(folderList);
-                gridView.setAdapter(mAdapter);
-                mAdapter.notifyDataSetChanged();
+
+                /*for(FolderData data : folderList){
+                    for (String folderName : folderNameList){
+                        if (data.getFolderName() == folderName){
+
+                        }
+                    }
+                }*/
+                if (folderNameList.indexOf(post.getFolderName()) < 0){
+                    folderList.add(post);
+                    mAdapter.setFolderDataArrayList(folderList);
+                    gridView.setAdapter(mAdapter);
+                    mAdapter.notifyDataSetChanged();
+                }
+
+
             }
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
@@ -116,7 +161,11 @@ public class ReceivedFragment extends Fragment {
 
 
         //ここのkeyとvalueをうまく指定するダウンロードした時に追加するやつ
-        folderPathRef.orderByChild("").equalTo().addChildEventListener(mEventListener);
+        folderPathRef.addChildEventListener(mEventListener);
+
+
+
+
 
 
         //gridVieを押したときの処理
@@ -136,11 +185,11 @@ public class ReceivedFragment extends Fragment {
 
             }
         });
-*/
+
         sendedButton.setOnClickListener(new View.OnClickListener() {
             @Override
                 public void onClick(View v) {
-                if(SendFragment.user != null){
+                if(user != null){
                     SentFragment fragmentSent = new SentFragment();
                     getFragmentManager().beginTransaction()
                             .replace(R.id.container,fragmentSent,SentFragment.TAG)
