@@ -467,7 +467,6 @@ public class MainActivity extends AppCompatActivity {
         // AlertDialog.Builderクラスを使ってAlertDialogの準備をする
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setTitle("");
-        //alertDialogBuilder.setMessage("送信に成功しました");
         alertDialogBuilder.setMessage(variable);
 
         // 肯定ボタンに表示される文字列、押したときのリスナーを設定する
@@ -483,40 +482,6 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
-
-
-    //入力したuidを持つfolderの情報のみ取得してgridViewに表示する
-
-    /*public void download(){
-        try {
-
-            //2017.9.12 0:11を入力してok押すと2017.9.12 0:11フォルダ内の203102214.jpgが取れる
-            //203102214.jpgを変数にするために先に保持しておきたい
-            //user.getUid()はアップロードした人のやつ
-
-            File localFile = File.createTempFile("image","jpg");
-            //localFile.toURI();でlocalFileのuriを取得できる
-            storageRef.child(user.getUid()).child(ReceiveFragment.cord).child("203102214.jpg").getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    // Local temp file has been created
-                    Log.d("aa","suc");
-
-                    //count += 1;
-                    //fileRef.changeEventListener(mEventListener);
-
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle any errors
-                }
-            });
-
-        } catch( IOException e ) {
-
-        }
-    }*/
 
     public void notKeyboard(){
         // キーボードが出てたら閉じる
