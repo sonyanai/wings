@@ -67,6 +67,7 @@ public class WatchFragment extends Fragment {
     private ArrayList<KeyFolderData> KeyFolderList = new ArrayList<KeyFolderData>();
     KeyFolderData post;
 
+
     //Fragmentで表示するViewを作成するメソッド
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){
@@ -166,6 +167,8 @@ public class WatchFragment extends Fragment {
         ChildEventListener bEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(final DataSnapshot dataSnapshot, String s) {
+
+                boughtFolderList.clear();
 
                 HashMap map = (HashMap) dataSnapshot.getValue();
 
@@ -295,12 +298,21 @@ public class WatchFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+                favoritePathRef.child("boughtFolderName").addChildEventListener(bEventListener);
+
 
 
                 //countに+1する処理
                 //購入ボタンを押したフォルダを見つけてcountに+1,userの領域にfoldername追加
                 for(KeyFolderData compareFolderName : KeyFolderList){
                     if(compareFolderName.getFolderName().equals(intentFolderName)) {
+                        /*if(boughtFolderList.contains(compareFolderName.getFolderName())){
+                            MainActivity.variable="in";
+                            activity.AlertDialog();
+                        }else{
+                            MainActivity.variable="no";
+                            activity.AlertDialog();;
+                        }*/
                         //勝った人の領域にそのfolderNameを追加する
                         //Firebaseにデータ作成、データのkey取得
                         String key = favoritePathRef.child("boughtFolder").push().getKey();
@@ -319,21 +331,21 @@ public class WatchFragment extends Fragment {
 
 
                         //countを取得して+1
-                        String oldCount = post.getCount();
+                        String oldCount = compareFolderName.getCount();
                         int sameOldCount =Integer.parseInt(oldCount);
                         int totalCount;
                         totalCount = sameOldCount + 1;
                         String newCount = String.valueOf(totalCount);
 
                         //keyを取得
-                        String gotFolderKey = post.getKey();
+                        String gotFolderKey = compareFolderName.getKey();
 
-                        String cost = post.getCost();
-                        String date = post.getDate();
-                        String folderName = post.getFolderName();
-                        String imageString = post.getImageBytes();
-                        String mUid = post.getUid();
-                        String name = post.getName();
+                        String cost = compareFolderName.getCost();
+                        String date = compareFolderName.getDate();
+                        String folderName = compareFolderName.getFolderName();
+                        String imageString = compareFolderName.getImageBytes();
+                        String mUid = compareFolderName.getUid();
+                        String name = compareFolderName.getName();
 
                         //countの変更
                         Map<String, String> data = new HashMap<String, String>();
